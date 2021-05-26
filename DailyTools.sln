@@ -25,9 +25,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrintAllFilesName", "PrintA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TetragonalGrid", "TetragonalGrid\TetragonalGrid.csproj", "{D17C8B6E-D1E5-4F75-95CF-F85184781ACF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksRepath", "BooksRepath\BooksRepath.csproj", "{B85DA277-D3DA-4F0E-A12F-166D5B74FD55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksRepath", "BooksRepath\BooksRepath.csproj", "{B85DA277-D3DA-4F0E-A12F-166D5B74FD55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksOutpath", "BooksOutpath\BooksOutpath.csproj", "{4CE9B3C8-8FE7-404A-ACC0-B9D8D241DD7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksOutpath", "BooksOutpath\BooksOutpath.csproj", "{4CE9B3C8-8FE7-404A-ACC0-B9D8D241DD7F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeStyleConverter", "CodeStyleConverter\CodeStyleConverter.csproj", "{6125EEED-A4EE-4134-87D9-EA27DD28965C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +87,10 @@ Global
 		{4CE9B3C8-8FE7-404A-ACC0-B9D8D241DD7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CE9B3C8-8FE7-404A-ACC0-B9D8D241DD7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CE9B3C8-8FE7-404A-ACC0-B9D8D241DD7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6125EEED-A4EE-4134-87D9-EA27DD28965C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6125EEED-A4EE-4134-87D9-EA27DD28965C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6125EEED-A4EE-4134-87D9-EA27DD28965C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6125EEED-A4EE-4134-87D9-EA27DD28965C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

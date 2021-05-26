@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Root>
+  <Test>1</Test>
+
+  <Files>
+    <Item Path="C:\Users\zjk\Desktop\PinBall\PinBallManager.lua" />
+  </Files>
+
+  <Folders>
+    <Item Path="C:\Users\zjk\Desktop\PinBall\UIPinBall" />
+  </Folders>
+
+  <LocalDefines>
+    <Item CodeLine="local CS = _G.CS" />
+    <Item CodeLine="local typeof = _G.typeof" />
+    <Item CodeLine="local this = self" />
+    <Item CodeLine="local this = nil" />
+    <Item CodeLine="this = self" />
+    <Item CodeLine="self = this" />
+    <Item CodeLine="this = nil" />
+  </LocalDefines>
+
+  <Dic>
+    <!--<Item Other="self:" Mine="this:" />
+    <Item Other="self." Mine="this." />-->
+  </Dic>
+</Root>

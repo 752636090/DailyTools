@@ -1,0 +1,16 @@
+E:\Users\zjk\source\repos\DailyTools\CodeStyleConverter\bin\Debug\net5.0\Configs\Config.xml
+E:\Users\zjk\source\repos\DailyTools\CodeStyleConverter\bin\Debug\net5.0\CodeStyleConverter.exe
+E:\Users\zjk\source\repos\DailyTools\CodeStyleConverter\bin\Debug\net5.0\CodeStyleConverter.deps.json
+E:\Users\zjk\source\repos\DailyTools\CodeStyleConverter\bin\Debug\net5.0\CodeStyleConverter.runtimeconfig.json
+E:\Users\zjk\source\repos\DailyTools\CodeStyleConverter\bin\Debug\net5.0\CodeStyleConverter.runtimeconfig.dev.json
+E:\Users\zjk\source\repos\DailyTools\CodeStyleConverter\bin\Debug\net5.0\CodeStyleConverter.dll
+E:\Users\zjk\source\repos\DailyTools\CodeStyleConverter\bin\Debug\net5.0\ref\CodeStyleConverter.dll
+E:\Users\zjk\source\repos\DailyTools\CodeStyleConverter\bin\Debug\net5.0\CodeStyleConverter.pdb
+E:\Users\zjk\source\repos\DailyTools\CodeStyleConverter\obj\Debug\net5.0\CodeStyleConverter.GeneratedMSBuildEditorConfig.editorconfig
+E:\Users\zjk\source\repos\DailyTools\CodeStyleConverter\obj\Debug\net5.0\CodeStyleConverter.AssemblyInfoInputs.cache
+E:\Users\zjk\source\repos\DailyTools\CodeStyleConverter\obj\Debug\net5.0\CodeStyleConverter.AssemblyInfo.cs
+E:\Users\zjk\source\repos\DailyTools\CodeStyleConverter\obj\Debug\net5.0\CodeStyleConverter.csproj.CoreCompileInputs.cache
+E:\Users\zjk\source\repos\DailyTools\CodeStyleConverter\obj\Debug\net5.0\CodeStyleConverter.dll
+E:\Users\zjk\source\repos\DailyTools\CodeStyleConverter\obj\Debug\net5.0\ref\CodeStyleConverter.dll
+E:\Users\zjk\source\repos\DailyTools\CodeStyleConverter\obj\Debug\net5.0\CodeStyleConverter.pdb
+E:\Users\zjk\source\repos\DailyTools\CodeStyleConverter\obj\Debug\net5.0\CodeStyleConverter.genruntimeconfig.cache
