@@ -1,0 +1,15 @@
+E:\Users\zjk\source\repos\DailyTools\HotKey\bin\Debug\netcoreapp3.1\HotKey.exe
+E:\Users\zjk\source\repos\DailyTools\HotKey\bin\Debug\netcoreapp3.1\HotKey.deps.json
+E:\Users\zjk\source\repos\DailyTools\HotKey\bin\Debug\netcoreapp3.1\HotKey.runtimeconfig.json
+E:\Users\zjk\source\repos\DailyTools\HotKey\bin\Debug\netcoreapp3.1\HotKey.runtimeconfig.dev.json
+E:\Users\zjk\source\repos\DailyTools\HotKey\bin\Debug\netcoreapp3.1\HotKey.dll
+E:\Users\zjk\source\repos\DailyTools\HotKey\bin\Debug\netcoreapp3.1\HotKey.pdb
+E:\Users\zjk\source\repos\DailyTools\HotKey\obj\Debug\netcoreapp3.1\HotKey.csprojAssemblyReference.cache
+E:\Users\zjk\source\repos\DailyTools\HotKey\obj\Debug\netcoreapp3.1\HotKey.Form1.resources
+E:\Users\zjk\source\repos\DailyTools\HotKey\obj\Debug\netcoreapp3.1\HotKey.csproj.GenerateResource.cache
+E:\Users\zjk\source\repos\DailyTools\HotKey\obj\Debug\netcoreapp3.1\HotKey.AssemblyInfoInputs.cache
+E:\Users\zjk\source\repos\DailyTools\HotKey\obj\Debug\netcoreapp3.1\HotKey.AssemblyInfo.cs
+E:\Users\zjk\source\repos\DailyTools\HotKey\obj\Debug\netcoreapp3.1\HotKey.csproj.CoreCompileInputs.cache
+E:\Users\zjk\source\repos\DailyTools\HotKey\obj\Debug\netcoreapp3.1\HotKey.dll
+E:\Users\zjk\source\repos\DailyTools\HotKey\obj\Debug\netcoreapp3.1\HotKey.pdb
+E:\Users\zjk\source\repos\DailyTools\HotKey\obj\Debug\netcoreapp3.1\HotKey.genruntimeconfig.cache

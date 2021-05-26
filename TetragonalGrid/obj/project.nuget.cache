@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "nT+rNwG3wHtsp8JajOoWLp1YMgJvgESJ+XegWSq1RVQISYgJk+2NcvYv+Wtv1O+06w55RWJ3QO6WTZe/TDnosA==",
+  "success": true,
+  "projectFilePath": "E:\\Users\\zjk\\source\\repos\\DailyTools\\TetragonalGrid\\TetragonalGrid.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\zjk\\.nuget\\packages\\animatedgif\\1.0.5\\animatedgif.1.0.5.nupkg.sha512",
+    "C:\\Users\\zjk\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
+    "C:\\Users\\zjk\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
+    "C:\\Users\\zjk\\.nuget\\packages\\system.drawing.common\\5.0.1\\system.drawing.common.5.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}

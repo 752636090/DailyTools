@@ -1,0 +1,13 @@
+E:\Users\zjk\source\repos\DailyTools\BooksRepath\bin\Debug\netcoreapp3.1\BooksRepath.exe
+E:\Users\zjk\source\repos\DailyTools\BooksRepath\bin\Debug\netcoreapp3.1\BooksRepath.deps.json
+E:\Users\zjk\source\repos\DailyTools\BooksRepath\bin\Debug\netcoreapp3.1\BooksRepath.runtimeconfig.json
+E:\Users\zjk\source\repos\DailyTools\BooksRepath\bin\Debug\netcoreapp3.1\BooksRepath.runtimeconfig.dev.json
+E:\Users\zjk\source\repos\DailyTools\BooksRepath\bin\Debug\netcoreapp3.1\BooksRepath.dll
+E:\Users\zjk\source\repos\DailyTools\BooksRepath\bin\Debug\netcoreapp3.1\BooksRepath.pdb
+E:\Users\zjk\source\repos\DailyTools\BooksRepath\obj\Debug\netcoreapp3.1\BooksRepath.csprojAssemblyReference.cache
+E:\Users\zjk\source\repos\DailyTools\BooksRepath\obj\Debug\netcoreapp3.1\BooksRepath.AssemblyInfoInputs.cache
+E:\Users\zjk\source\repos\DailyTools\BooksRepath\obj\Debug\netcoreapp3.1\BooksRepath.AssemblyInfo.cs
+E:\Users\zjk\source\repos\DailyTools\BooksRepath\obj\Debug\netcoreapp3.1\BooksRepath.csproj.CoreCompileInputs.cache
+E:\Users\zjk\source\repos\DailyTools\BooksRepath\obj\Debug\netcoreapp3.1\BooksRepath.dll
+E:\Users\zjk\source\repos\DailyTools\BooksRepath\obj\Debug\netcoreapp3.1\BooksRepath.pdb
+E:\Users\zjk\source\repos\DailyTools\BooksRepath\obj\Debug\netcoreapp3.1\BooksRepath.genruntimeconfig.cache

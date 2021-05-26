@@ -1,0 +1,13 @@
+E:\Users\zjk\source\repos\DailyTools\PrintFilesNameInFolder\bin\Debug\netcoreapp3.1\PrintFilesNameInFolder.exe
+E:\Users\zjk\source\repos\DailyTools\PrintFilesNameInFolder\bin\Debug\netcoreapp3.1\PrintFilesNameInFolder.deps.json
+E:\Users\zjk\source\repos\DailyTools\PrintFilesNameInFolder\bin\Debug\netcoreapp3.1\PrintFilesNameInFolder.runtimeconfig.json
+E:\Users\zjk\source\repos\DailyTools\PrintFilesNameInFolder\bin\Debug\netcoreapp3.1\PrintFilesNameInFolder.runtimeconfig.dev.json
+E:\Users\zjk\source\repos\DailyTools\PrintFilesNameInFolder\bin\Debug\netcoreapp3.1\PrintFilesNameInFolder.dll
+E:\Users\zjk\source\repos\DailyTools\PrintFilesNameInFolder\bin\Debug\netcoreapp3.1\PrintFilesNameInFolder.pdb
+E:\Users\zjk\source\repos\DailyTools\PrintFilesNameInFolder\obj\Debug\netcoreapp3.1\PrintFilesNameInFolder.csprojAssemblyReference.cache
+E:\Users\zjk\source\repos\DailyTools\PrintFilesNameInFolder\obj\Debug\netcoreapp3.1\PrintFilesNameInFolder.AssemblyInfoInputs.cache
+E:\Users\zjk\source\repos\DailyTools\PrintFilesNameInFolder\obj\Debug\netcoreapp3.1\PrintFilesNameInFolder.AssemblyInfo.cs
+E:\Users\zjk\source\repos\DailyTools\PrintFilesNameInFolder\obj\Debug\netcoreapp3.1\PrintFilesNameInFolder.csproj.CoreCompileInputs.cache
+E:\Users\zjk\source\repos\DailyTools\PrintFilesNameInFolder\obj\Debug\netcoreapp3.1\PrintFilesNameInFolder.dll
+E:\Users\zjk\source\repos\DailyTools\PrintFilesNameInFolder\obj\Debug\netcoreapp3.1\PrintFilesNameInFolder.pdb
+E:\Users\zjk\source\repos\DailyTools\PrintFilesNameInFolder\obj\Debug\netcoreapp3.1\PrintFilesNameInFolder.genruntimeconfig.cache

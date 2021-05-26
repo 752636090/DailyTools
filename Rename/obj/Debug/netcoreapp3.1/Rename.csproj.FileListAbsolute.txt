@@ -1,0 +1,13 @@
+E:\Users\zjk\source\repos\DailyTools\Rename\bin\Debug\netcoreapp3.1\Rename.exe
+E:\Users\zjk\source\repos\DailyTools\Rename\bin\Debug\netcoreapp3.1\Rename.deps.json
+E:\Users\zjk\source\repos\DailyTools\Rename\bin\Debug\netcoreapp3.1\Rename.runtimeconfig.json
+E:\Users\zjk\source\repos\DailyTools\Rename\bin\Debug\netcoreapp3.1\Rename.runtimeconfig.dev.json
+E:\Users\zjk\source\repos\DailyTools\Rename\bin\Debug\netcoreapp3.1\Rename.dll
+E:\Users\zjk\source\repos\DailyTools\Rename\bin\Debug\netcoreapp3.1\Rename.pdb
+E:\Users\zjk\source\repos\DailyTools\Rename\obj\Debug\netcoreapp3.1\Rename.csprojAssemblyReference.cache
+E:\Users\zjk\source\repos\DailyTools\Rename\obj\Debug\netcoreapp3.1\Rename.AssemblyInfoInputs.cache
+E:\Users\zjk\source\repos\DailyTools\Rename\obj\Debug\netcoreapp3.1\Rename.AssemblyInfo.cs
+E:\Users\zjk\source\repos\DailyTools\Rename\obj\Debug\netcoreapp3.1\Rename.csproj.CoreCompileInputs.cache
+E:\Users\zjk\source\repos\DailyTools\Rename\obj\Debug\netcoreapp3.1\Rename.dll
+E:\Users\zjk\source\repos\DailyTools\Rename\obj\Debug\netcoreapp3.1\Rename.pdb
+E:\Users\zjk\source\repos\DailyTools\Rename\obj\Debug\netcoreapp3.1\Rename.genruntimeconfig.cache
