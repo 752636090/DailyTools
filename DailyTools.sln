@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rename", "Rename\Rename.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VideoDuration", "VideoDuration\VideoDuration.csproj", "{C0C47A7B-6C33-474B-B542-60E4F83E4681}"
 EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "DownloadVideos", "DownloadVideos\DownloadVideos.pyproj", "{427C6828-4B33-426C-932D-B3BE8618B633}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileAddPrefix", "FileAddPrefix\FileAddPrefix.csproj", "{C42B2298-7B91-49BE-96B5-C59C329C4426}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FindSameFile", "FindSameFile\FindSameFile.csproj", "{CC883F5F-50CE-49C8-A5C9-9A9DAC218203}"
@@ -29,7 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksRepath", "BooksRepath\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksOutpath", "BooksOutpath\BooksOutpath.csproj", "{4CE9B3C8-8FE7-404A-ACC0-B9D8D241DD7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeStyleConverter", "CodeStyleConverter\CodeStyleConverter.csproj", "{6125EEED-A4EE-4134-87D9-EA27DD28965C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeStyleConverter", "CodeStyleConverter\CodeStyleConverter.csproj", "{6125EEED-A4EE-4134-87D9-EA27DD28965C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{31E7E309-2A30-483A-973C-0AE5E61D06D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,8 +49,6 @@ Global
 		{C0C47A7B-6C33-474B-B542-60E4F83E4681}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0C47A7B-6C33-474B-B542-60E4F83E4681}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0C47A7B-6C33-474B-B542-60E4F83E4681}.Release|Any CPU.Build.0 = Release|Any CPU
-		{427C6828-4B33-426C-932D-B3BE8618B633}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{427C6828-4B33-426C-932D-B3BE8618B633}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C42B2298-7B91-49BE-96B5-C59C329C4426}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C42B2298-7B91-49BE-96B5-C59C329C4426}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C42B2298-7B91-49BE-96B5-C59C329C4426}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -91,6 +89,10 @@ Global
 		{6125EEED-A4EE-4134-87D9-EA27DD28965C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6125EEED-A4EE-4134-87D9-EA27DD28965C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6125EEED-A4EE-4134-87D9-EA27DD28965C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31E7E309-2A30-483A-973C-0AE5E61D06D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31E7E309-2A30-483A-973C-0AE5E61D06D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31E7E309-2A30-483A-973C-0AE5E61D06D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31E7E309-2A30-483A-973C-0AE5E61D06D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,12 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml.Linq;
 
@@ -11,7 +16,9 @@ namespace CodeStyleConverter
     {
         private static List<FileInfo> fileLst;
         private static List<string> localDefineLst;
-        private static List<MyDic> myDicLst;
+        private static List<MyDic> dic2MineLst;
+        private static List<MyDic> dic2OtherLst;
+        private static List<string> singletonLst;
 
         static void Main(string[] args)
         {
@@ -51,7 +58,9 @@ namespace CodeStyleConverter
         {
             fileLst = new List<FileInfo>();
             localDefineLst = new List<string>();
-            myDicLst = new List<MyDic>();
+            dic2OtherLst = new List<MyDic>();
+            dic2MineLst = new List<MyDic>();
+            singletonLst = new List<string>();
 
             string configPath = AppDomain.CurrentDomain.BaseDirectory + "Configs\\Config.xml";
             XDocument doc = XDocument.Load(configPath);
@@ -76,35 +85,58 @@ namespace CodeStyleConverter
             IEnumerable<XElement> codeElems = doc.Root.Element("LocalDefines").Elements("Item");
             foreach (XElement item in codeElems)
             {
-                string path = item.Attribute("CodeLine").Value;
-                localDefineLst.Add(path);
+                string value = item.Attribute("CodeLine").Value;
+                localDefineLst.Add(value);
             }
 
-            IEnumerable<XElement> dicElems = doc.Root.Element("Dic").Elements("Item");
-            foreach (XElement item in dicElems)
+            IEnumerable<XElement> dic2MineElems = doc.Root.Element("Dic2Mine").Elements("Item");
+            foreach (XElement item in dic2MineElems)
             {
-                myDicLst.Add(new MyDic() { Other = item.Attribute("Other").Value,
-                    Mine = item.Attribute("Mine").Value
+                dic2MineLst.Add(new MyDic()
+                {
+                    Other = item.Attribute("Other").Value,
+                    Mine = item.Attribute("Mine").Value,
+                    IsRegex = item.Attribute("IsRegex").Value == "1",
+                    NotContainsStrs = item.Attribute("NotContains")?.Value.Split("|OR|"),
                 });
+            }
+
+            IEnumerable<XElement> dic2OtherElems = doc.Root.Element("Dic2Other").Elements("Item");
+            foreach (XElement item in dic2OtherElems)
+            {
+                dic2OtherLst.Add(new MyDic()
+                {
+                    Other = item.Attribute("Other").Value,
+                    Mine = item.Attribute("Mine").Value,
+                    IsRegex = item.Attribute("IsRegex").Value == "1",
+                    NotContainsStrs = item.Attribute("NotContains")?.Value.Split("|OR|"),
+                });
+            }
+
+            IEnumerable<XElement> singletonElems = doc.Root.Element("Singletons").Elements("Item");
+            foreach (XElement item in singletonElems)
+            {
+                string value = item.Attribute("Item").Value;
+                singletonLst.Add(value);
             }
         }
 
         private static void ProcessFileToOther(FileInfo file)
         {
-            StreamReader sr = file.OpenText();
+            List<MyDic> runDicLst = CreateRunDicLst(file, true);
+
             StringBuilder sb = new();
-            int iLine = 0;
-            while (!sr.EndOfStream)
+            string[] lines = IOUtil.GetFileTextArr(file);
+            for (int iLine = 0; iLine < lines.Length; iLine++)
             {
-                iLine++;
-                string line = sr.ReadLine();
+                string line = lines[iLine];
                 foreach (string item in localDefineLst)
                 {
                     if (line.Contains(item))
                     {
                         string tmp = line;
                         string spaces = "";
-                        while(tmp[0] == ' ')
+                        while (tmp[0] == ' ')
                         {
                             tmp = tmp[1..];
                             spaces += " ";
@@ -123,33 +155,90 @@ namespace CodeStyleConverter
                         }
                         break;
                     }
-                    else
+                }
+                foreach (MyDic dic in runDicLst)
+                {
+                    bool canContinue = true;
+                    //line = line.Replace(dic.Mine, dic.Other);
+                    if (dic.NotContainsStrs != null)
                     {
-                        foreach (MyDic dic in myDicLst)
+                        for (int i = 0; i < dic.NotContainsStrs.Length; i++)
+                        {
+                            if (line.Contains(dic.NotContainsStrs[i]))
+                            {
+                                canContinue = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (canContinue)
+                    {
+                        if (dic.IsRegex)
+                        {
+                            Regex regex = new(dic.Mine);
+                            line = regex.Replace(line, dic.Other);
+                        }
+                        else
                         {
                             line = line.Replace(dic.Mine, dic.Other);
                         }
                     }
                 }
+                foreach (string item in singletonLst)
+                {
+                    if (!file.Name.Contains(item) && line.Contains(item) && !line.Contains($"{item}:GetInstance()"))
+                    {
+                        line = line.Replace(item, $"{item}:GetInstance()");
+                        line = line.Replace($"local {item}:GetInstance()", $"local {item}");
+                        break;
+                    }
+                }
                 sb.AppendLine(line);
             }
-            sr.Close();
-            FileStream fs = file.OpenWrite();
-            byte[] bytes = Encoding.UTF8.GetBytes(sb.ToString());
-            fs.SetLength(bytes.Length);
-            fs.Write(bytes, 0, bytes.Length);
-            fs.Close();
+            string ret = sb.ToString();
+            ret = ret.Substring(0, ret.LastIndexOf("\r\n"));
+            IOUtil.CreateTextFile(file.FullName, ret);
+        }
+
+        private static List<MyDic> CreateRunDicLst(FileInfo file, bool is2Other)
+        {
+            List<MyDic> runDicLst;
+            if (is2Other)
+            {
+                runDicLst = DeepCopyUtil.Clone(dic2OtherLst);
+            }
+            else
+            {
+                runDicLst = DeepCopyUtil.Clone(dic2MineLst);
+            }
+            //StringUtil.DeepReplace(runDicLst, "$(FileName)", file.Name.Substring(0, file.Name.IndexOf('.')));
+            string fileName = file.Name.Substring(0, file.Name.IndexOf('.'));
+            foreach (MyDic item in runDicLst)
+            {
+                item.Mine = item.Mine.Replace("$(FileName)", fileName);
+                item.Other = item.Other.Replace("$(FileName)", fileName);
+                if (item.NotContainsStrs != null)
+                {
+                    for (int i = 0; i < item.NotContainsStrs.Length; i++)
+                    {
+                        string s = item.NotContainsStrs[i];
+                        item.NotContainsStrs[i] = s.Replace("$(FileName)", fileName);
+                    }
+                }
+            }
+
+            return runDicLst;
         }
 
         private static void ProcessFileToMine(FileInfo file)
         {
-            StreamReader sr = file.OpenText();
+            List<MyDic> runDicLst = CreateRunDicLst(file, false);
+
             StringBuilder sb = new();
-            int iLine = 0;
-            while (!sr.EndOfStream)
+            string[] lines = IOUtil.GetFileTextArr(file);
+            for (int iLine = 0; iLine < lines.Length; iLine++)
             {
-                iLine++;
-                string line = sr.ReadLine();
+                string line = lines[iLine];
                 foreach (string item in localDefineLst)
                 {
                     if (line.Contains(item))
@@ -165,28 +254,59 @@ namespace CodeStyleConverter
                         }
                         break;
                     }
-                    else
+                }
+                foreach (MyDic dic in runDicLst)
+                {
+                    bool canContinue = true;
+                    //line = line.Replace(dic.Mine, dic.Other);
+                    if (dic.NotContainsStrs != null)
                     {
-                        foreach (MyDic dic in myDicLst)
+                        for (int i = 0; i < dic.NotContainsStrs.Length; i++)
+                        {
+                            if (line.Contains(dic.NotContainsStrs[i]))
+                            {
+                                canContinue = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (canContinue)
+                    {
+                        if (dic.IsRegex)
+                        {
+                            Regex regex = new(dic.Other);
+                            line = regex.Replace(line, dic.Mine);
+                        }
+                        else
                         {
                             line = line.Replace(dic.Other, dic.Mine);
                         }
                     }
                 }
+                foreach (string item in singletonLst)
+                {
+                    if (!file.Name.Contains(item) && line.Contains(item) && line.Contains($"{item}:GetInstance()"))
+                    {
+                        line = line.Replace($"{item}:GetInstance()", item);
+                        break;
+                    }
+                }
                 sb.AppendLine(line);
             }
-            sr.Close();
-            FileStream fs = file.OpenWrite();
-            byte[] bytes = Encoding.UTF8.GetBytes(sb.ToString());
-            fs.SetLength(bytes.Length);
-            fs.Write(bytes, 0, bytes.Length);
-            fs.Close();
+            string ret = sb.ToString();
+            ret = ret.Substring(0, ret.LastIndexOf("\r\n"));
+            IOUtil.CreateTextFile(file.FullName, ret);
         }
     }
 
+    [Serializable]
+    [DataContract]
+    [KnownType(typeof(MyDic))]
     class MyDic
     {
         public string Other;
         public string Mine;
+        public bool IsRegex;
+        public string[] NotContainsStrs;
     }
 }
