@@ -15,7 +15,9 @@ namespace MGameUtil
         private static List<FileInfo> fileLst;
         private static Regex regexClass = new("class \"(.*)\"");
         private static Regex regexFunctionMine = new(@"function (.*):(.*)\((.*)\)");
-        private static Regex regexFunctionOther = new(@"function (.*)\(self(.*)\)");
+        private static Regex regexFunctionStatic = new(@"function (.*).(.*)\((.*)\)");
+        private static Regex regexFunctionOther = new(@"function (.*)\((.*)\)");
+
 
         private static void Init()
         {
@@ -51,17 +53,30 @@ namespace MGameUtil
                         continue;
                     }
 
+
                     Match matchFunc = regexFunctionMine.Match(line);
                     if (matchFunc.Success)
                     {
+                        string className = classStack.Peek().Item1; // matchFunc.Groups[1].Value也是className
+                        string funcName = matchFunc.Groups[2].Value;
+                        string param = matchFunc.Groups[3].Value;
                         line = line.Replace($"{matchFunc.Groups[1].Value}:", "");
                         if (matchFunc.Groups[3].Value == "")
                         {
-                            line = line.Replace($"{matchFunc.Groups[2].Value}()", $"{matchFunc.Groups[2].Value}(self)");
+                            line = line.Replace($"{funcName}()", $"{funcName}(self)");
                         }
                         else
                         {
-                            line = line.Replace($"{matchFunc.Groups[3].Value}", $"self, {matchFunc.Groups[3].Value}");
+                            line = line.Replace($"{param}", $"self, {param}");
+                        }
+                    }
+                    else
+                    {
+                        Match matchFuncStatic = regexFunctionStatic.Match(line);
+                        if (matchFuncStatic.Success)
+                        {
+                            string className = classStack.Peek().Item1;
+                            line = line.Replace($"{className}.", "");
                         }
                     }
 
@@ -70,7 +85,9 @@ namespace MGameUtil
                 string ret = sb.ToString();
                 ret = ret.Substring(0, ret.LastIndexOf("\r\n"));
                 IOUtil.CreateTextFile(file.FullName, ret);
+                Console.WriteLine($"{file.Name}转换完成");
             }
+            Console.WriteLine($"全部转换完成");
         }
 
         public static void ConvertToMine()
@@ -91,13 +108,17 @@ namespace MGameUtil
                         continue;
                     }
 
+
                     Match matchFunc = regexFunctionOther.Match(line);
                     if (matchFunc.Success)
                     {
-                        line = line.Replace($"{matchFunc.Groups[1].Value}", $"{classStack.Peek().Item1}:{matchFunc.Groups[1].Value}");
-                        if (matchFunc.Groups[2].Value == "")
+                        string className = classStack.Peek().Item1;
+                        string funcName = matchFunc.Groups[1].Value;
+                        string symbol = line.Contains($"(self") ? ":" : ".";
+                        line = line.Replace($"{funcName}", $"{className}{symbol}{funcName}");
+                        if (matchFunc.Groups[2].Value == "self")
                         {
-                            line = line.Replace($"self", $"");
+                            line = line.Replace($"{funcName}(self)", $"{funcName}()");
                         }
                         else
                         {
@@ -110,7 +131,9 @@ namespace MGameUtil
                 string ret = sb.ToString();
                 ret = ret.Substring(0, ret.LastIndexOf("\r\n"));
                 IOUtil.CreateTextFile(file.FullName, ret);
+                Console.WriteLine($"{file.Name}转换完成");
             }
+            Console.WriteLine($"全部转换完成");
         }
 
         private static bool CollectClassInfo(string line, Stack<(string, int)> classStack)
@@ -151,7 +174,10 @@ namespace MGameUtil
 }
 
 /*
-class "TestClass" (function(_ENV)
+class "DlgAdventureName" (function(_ENV)
+    inherit (UEDlgPanel)
+
+    class "TestClass" (function(_ENV)
         ----------------------------------------------
         ------------------ Property ------------------
         ----------------------------------------------
@@ -165,10 +191,21 @@ class "TestClass" (function(_ENV)
         function TestFunc(self, data)
             
         end
+        
+        __DebugArguments__{ }
+        __DebugStatic__() function TestStatic1()
+            
+        end
+        
+        __DebugArguments__{ }
+        __DebugStatic__() function TestStatic2(data)
+            
+        end
     
         ----------------------------------------------
         ------------------- Method -------------------
         ----------------------------------------------
     
     end)
+end)
  */
