@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "drnI2qYkZ8LTfiSDnc57jkcbuEI5TzxQkdzle+M5sIZO9siPbMdxlRC+BKVwygDEipiEvUfH4BS5ft2rDGZxSw==",
+  "dgSpecHash": "XDmrBJqf5rNQI+sRZTb65WpwKvTv5MYThTzi+WNZE+RL0zpxzPxyVnPsX5wgQMQDlLEkouUTJuEel8q07hHz3Q==",
   "success": true,
-  "projectFilePath": "E:\\Users\\zjk\\source\\repos\\DailyTools\\TextProcessing\\TextProcessing.csproj",
+  "projectFilePath": "E:\\DailyTools\\TextProcessing\\TextProcessing.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

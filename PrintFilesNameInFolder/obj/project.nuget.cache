@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "6l6TAY0oRMVg8odp/vwJ/MNwviNdyXQAApncgU8B8TdDQZo7CyKkUrRi5y88UstTupRRsieoFbalfraGkJhmmA==",
+  "dgSpecHash": "fiSC0Vx033qCksoATFhwaDo6DmCwGaxUWY3nR6URxhr2J3RzZ+naqm+Yal9ci7vjsJNtQZ/0w3M+MmkSDlXEog==",
   "success": true,
-  "projectFilePath": "E:\\Users\\zjk\\source\\repos\\DailyTools\\PrintFilesNameInFolder\\PrintFilesNameInFolder.csproj",
+  "projectFilePath": "E:\\DailyTools\\PrintFilesNameInFolder\\PrintFilesNameInFolder.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

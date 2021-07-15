@@ -1,0 +1,1711 @@
+﻿function _M.GetLeagueBriefInfo(leagueID)
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+
+	local data = GetLeagueBriefInfo();
+	data.roleid = session:GetCharacterID();
+	data.league_id = leagueID;
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	session:SendProtocol(data);
+end
+
+-- 解散公会
+function _M.DismissLeague()
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+
+	local data = DismissLeague();
+	data.roleid = session:GetCharacterID();
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	session:SendProtocol(data);
+end
+
+function _M.RecoverLeague()
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+
+	local data = UndoDismissLeague();
+	data.roleid = session:GetCharacterID();
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	session:SendProtocol(data);
+end
+
+-- @param : long, byte
+function _M.LeagueCommission(targetPlayerID, caste)
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+
+	local data = LeagueCommission();
+	data.roleid = session:GetCharacterID();
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	data.target_player_id = targetPlayerID;
+	data.caste = caste;
+	session:SendProtocol(data);
+end
+
+-- 被辞职
+function _M.LeagueResign()
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+
+	local data = LeagueResign();
+	data.roleid = session:GetCharacterID();
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	session:SendProtocol(data);
+end
+
+-- @param : long
+function _M.LeagueExpel(targetPlayerID)
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+
+	local data = LeagueExpel();
+	data.roleid = session:GetCharacterID();
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	data.target_player_id = targetPlayerID;
+	session:SendProtocol(data);
+end
+
+-- @param : long
+function _M.LeagueDemise(targetPlayerID)
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+
+	local data = LeagueDemise();
+	data.roleid = session:GetCharacterID();
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	data.target_player_id = targetPlayerID;
+	session:SendProtocol(data);
+end
+
+-- 荣誉职位委任
+-- @param : long, byte
+function _M.LeagueHonorCommission(targetPlayerID, caste)
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+
+	local data = LeagueHonorCommission();
+	data.roleid = session:GetCharacterID();
+	data.target_player_id = targetPlayerID;
+	data.honor_caste = caste;
+	session:SendProtocol(data);
+end
+
+-- @param : byte, byte
+function _M.LeagueAutoJoinLevelSet(level, auto_join_switch)
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+
+	local data = SetAutoJoinLeagueCfg();
+	data.roleid = session:GetCharacterID();
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	data.level_min = level;
+	data.auto_join_switch = auto_join_switch;
+	session:SendProtocol(data);
+end
+
+function _M.LeagueRefuseAllApply()
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+
+	local data = LeagueRefuseAllApply();
+	data.roleid = session:GetCharacterID();
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	session:SendProtocol(data);
+end
+
+-- @param : RpcDataVector<LeagueRightsInfo>, bool
+function _M.LeaguePrivilege(rights, isrecover)
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+
+	local data = LeagueModifyRights();
+	data.roleid = session:GetCharacterID();
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	data.rights = rights;
+	data.reset = isrecover == true and 1 or 0
+	session:SendProtocol(data);
+end
+
+function _M.GetPushJoinLeague(rights)
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+
+	local data = GetRecommendLeague();
+	data.roleid = session:GetCharacterID();
+	session:SendProtocol(data);
+end
+
+function _M.LeagueChairmanElect()
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+
+	local data = LeagueChairmanElect();
+	data.roleid = session:GetCharacterID();
+	session:SendProtocol(data);
+end
+-- endregion
+
+
+
+function _M.Key_Establish()
+
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+
+	local game = UEGlobal.GetGame();
+	if game then
+		local data = KeyReestablish();
+		data.roleid = game:GetReconnectInfo().roleId;
+		data.flag = game:GetReconnectInfo().flag;
+		data.platform_type = game:GetReconnectInfo().platform_type;
+		data.src_cluster_id = session:GetNetManager().idZone;
+		data.accountid = session:GetAccountID();
+		data.random = game:GetReconnectInfo().random;
+		session:SendProtocol(data);
+	end
+end
+
+-- 频道聊天
+-- Channel ENUM_CHAT_NET_CHANNEL
+function _M.SendChatData(channel, msg, pack, slot)
+	local session = UEGlobal.GetSession();
+	if StringUtil.IsNilOrEmpty(msg) then
+		return;
+	end
+	local sendMsgPrtcl = ChatMessage();
+	sendMsgPrtcl.src_roleid = session:GetCharacterID();
+	sendMsgPrtcl.chat_range = channel;	-- ChatBase
+	sendMsgPrtcl.msg = msg;
+	-- 此处的3
+	-- sendMsgPrtcl.src_type = ENUM_CHAT_MESSAGE_SRC_TYPE.SRC_TYPE_PLAYER;
+	sendMsgPrtcl.src_type = 4;
+	
+	if pack >= 0 then
+		local chatEquipItem = ChatEquipItemC2S();
+		chatEquipItem.cmd_id = ChatEquipItemC2S.CHAT_EQUIP_ITEM;
+		chatEquipItem.where = pack;
+		chatEquipItem.index = slot;
+		local data = GNET.Common.OctetsStreamLE.New();
+		chatEquipItem:Marshal(data);
+		sendMsgPrtcl.data = data:to_OctetsStream();
+	end
+	
+	-- Debug.LogValue(sendMsgPrtcl, "SendChatData");
+	session:SendProtocol(sendMsgPrtcl);
+end
+
+--普通好友、临时好友发送消失都走PrivateChat
+function _M.SendPrivateChatData(dst_roleid, msg, pack, slot)
+	local session = UEGlobal.GetSession();
+	if StringUtil.IsNilOrEmpty(msg) then
+		return;
+	end
+
+	local privateChat = ChatMessage();
+	privateChat.src_roleid = session:GetCharacterID();
+	
+	local targetPlayer = Player();
+    targetPlayer.roleid = dst_roleid;
+    privateChat.dst_playerlist:Add(targetPlayer);
+    
+	privateChat.msg = msg;
+	privateChat.chat_range = ENUM_CHAT_NET_CHANNEL.HOSTPLAYER;
+	-- privateChat.src_type = ENUM_CHAT_MESSAGE_SRC_TYPE.SRC_TYPE_PLAYER;
+	privateChat.src_type = 4;
+
+	if pack >= 0 then
+		local chatEquipItem = ChatEquipItemC2S();
+		chatEquipItem.cmd_id = ChatEquipItemC2S.CHAT_EQUIP_ITEM;
+		chatEquipItem.where = pack;
+		chatEquipItem.index = slot;
+		local data = GNET.Common.OctetsStreamLE.New();
+		chatEquipItem:Marshal(data);
+		privateChat.data = data:to_OctetsStream();
+	end
+	
+	-- Debug.LogValue(privateChat, "privateChat");
+	session:SendProtocol(privateChat);
+end
+
+function _M.QueryNewNotify()
+    local session = UEGlobal.GetSession();
+    if session == nil then
+        return;
+    end
+
+    local data = QueryNewNotify();
+    data.roleid = session:GetCharacterID();
+    data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+    session:SendProtocol(data);
+end
+--取新消息
+function _M.GetNewMessage(dst_roleid)
+	--Debug.LogError("GetNewMessage");
+    local session = UEGlobal.GetSession();
+    if session == nil then
+        return;
+    end
+
+    local data = GetNewMessage();
+    data.roleid = session:GetCharacterID();
+    data.opposite_roleid = dst_roleid;
+    data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+    session:SendProtocol(data);
+end
+
+--取未读和已读
+function _M.GetMessage(dst_roleid)
+	--Debug.LogError("GetAllMessage");
+    local session = UEGlobal.GetSession();
+    if session == nil then
+        return;
+    end
+
+    local data = GetMessage();
+    data.roleid = session:GetCharacterID();
+    data.opposite_roleid = dst_roleid;
+    data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+    session:SendProtocol(data);
+end
+
+--好友系统
+function _M.GetMailAndFriendData()
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+	if UEGlobal.GetFriendMan() ~= nil then
+		local data = GetMailAndFriend();
+		data.roleid = session:GetCharacterID();
+		data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+		data.friend_ver = UEGlobal.GetFriendMan():GetFriendDataVersion();
+		session:SendProtocol(data);
+	end
+end
+
+function _M.AddFriendByName(roleName , addType)
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+
+	local data = AddFriend();
+	data.add_type = addType;
+	data.src_roleid = session:GetCharacterID();
+	data.dst_roleid = -1;
+	data.name = roleName;
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	session:SendProtocol(data);
+end
+
+function _M.AddFriendByID(roleID, addType)
+	if roleID <= 0 then
+		return;
+	end
+
+	if UEGlobal.IsServerCentral() and
+		not UEGlobal.IsInServerCentralRobotDungeon() and
+		not UEPlayerUtil.IsHostInTeamArenaInstance() and
+		not UEPlayerUtil.IsHostInCrossChiefInstance() and
+		not UEPlayerUtil.IsHostInEnergyPointInstance() and
+		not UEPlayerUtil.IsHostInCrossPrisonInstance() then
+
+		UEGlobal.ShowNotify(UEGlobal.GetString("FIREND_ADD_IN_ARENA_FORBID"));
+		return;
+	end
+
+	if UEGlobal.GetFriendMan() ~= nil and UEGlobal.GetFriendMan():GetFriendByID(roleID) ~= nil then
+		UEGlobal.ShowNotify(UEGlobal.GetString("FIREND_ADD_ALREADY"));
+		return;
+	end
+
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+
+	local data = AddFriend();
+	data.add_type = addType;
+	data.src_roleid = session:GetCharacterID();
+	data.dst_roleid = roleID;
+	data.name = "";
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	session:SendProtocol(data);
+end
+
+function _M.GetBlackList()
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+
+	local data = GetBlackList();
+	data.roleid = session:GetCharacterID();
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	session:SendProtocol(data);
+end
+
+function _M.GetTempFriendList()
+
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+
+	local data = GetTempFriends();
+	data.roleid = session:GetCharacterID();
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	session:SendProtocol(data);
+end
+
+function _M.AddFriendResponse(dst_roleid)
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+
+	local data = AddFriendResponse();
+	data.src_roleid = session:GetCharacterID();
+	data.dst_roleid = dst_roleid;
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	session:SendProtocol(data);
+end
+
+
+function _M.DeleteFriend(dst_roleid)
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+	local data = DelFriend();
+	data.src_roleid = session:GetCharacterID();
+	data.dst_roleid = dst_roleid;
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	session:SendProtocol(data);
+end
+
+function _M.DeleteTempFriend(dst_roleid)
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+
+	local data = DelTempFriend();
+	data.src_roleid = session:GetCharacterID();
+	data.dst_roleid = dst_roleid;
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	session:SendProtocol(data);
+end
+
+function _M.AddToBlackList(dst_roleid)
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+
+	local data = AddToBlackList();
+	data.src_roleid = session:GetCharacterID();
+	data.dst_roleid = dst_roleid;
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	session:SendProtocol(data);
+end
+
+function _M.DelFromBlackList(dst_roleid)
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+
+	local data = DelFromBlackList();
+	data.src_roleid = session:GetCharacterID();
+	data.dst_roleid = dst_roleid;
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	session:SendProtocol(data);
+end
+--好友
+--请求玩家信息
+function _M.GetPlayerInfoByNameLst(nameLst)
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+
+	local data = GetPlayerBriefInfoByName()
+	data.roleid = session:GetCharacterID();
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	for i=1,nameLst.Count do
+		data.playerlist:Insert(nameLst[i])
+	end
+	data.reason = 0;
+	session:SendProtocol(data);
+end
+
+-- 红包
+-- @param : int
+function _M.RevokeRedBag(redbagid)
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+
+	local data = PlayerRevokeRedBag();
+	data.roleid = session:GetCharacterID();
+	data.redbag_id = redbagid;
+	session:SendProtocol(data);
+end
+
+-- @param : int
+function _M.RefuseRedBag(redbagid)
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+
+	local data = PlayerRefuseRedBag();
+	data.roleid = session:GetCharacterID();
+	data.redbag_id = redbagid;
+	session:SendProtocol(data);
+end
+
+-- @param : int
+function _M.UpdateRedBag(redbagid)
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+
+	local data = PlayerRefreshRedBag();
+	data.roleid = session:GetCharacterID();
+	data.redbag_id = redbagid;
+	session:SendProtocol(data);
+end
+
+-- 世界Boss
+function _M.QueryAllWorldBossInfo()
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+
+	local data = GetBossInfo();
+	data.boss_tid = 0;
+	session:SendProtocol(data);
+end
+
+-- 世界Boss
+function _M.QueryWorldBossInfo(boss_tid)
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+
+	if boss_tid == nil or boss_tid <= 0 then return end
+
+	local data = GetBossInfo();
+	data.boss_tid = boss_tid;
+	session:SendProtocol(data);
+end
+
+
+-- 科举
+-- @param : ENUM_EXAM_TYPE, int, int
+function _M.AnswerImperialExam(type, times, index, timestamp)
+	if (UEExamMan.IS_SHOW_WARN_LOG == true) then
+		Debug.LogError("Exam Log : AnswerImperialExam")
+	end
+
+	local session = UEGlobal.GetSession()
+	if session == nil then
+		return nil
+	end
+
+	local data = ExamPlayerAnswer()
+	data.timestamp = timestamp
+	data.roleid = session:GetCharacterID()
+	data.exam_type = type
+	data.question_index = times - 1
+	data.option_index = index - 1
+	session:SendProtocol(data)
+end
+
+-- 公会聊天记录
+function _M.GetLeagueChatRecord()
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+
+	if UEGlobal.GetHostLeague() ~= nil then
+	    local data = GetLeagueChatRecord();
+		data.roleid = session:GetCharacterID();
+		data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+		data.league_id = UEGlobal.GetHostLeague():GetId();
+		session:SendProtocol(data);
+	end
+end
+
+-- 排行榜
+function _M.RequestRankList(roldID, rankTID, pageIndex)
+	if pageIndex == nil then pageIndex = 0 end -- SetDefaultValue
+	-- if not UEFunctionSwtich.Get():CheckFuncSwitch(ENUM_FUNCTION_SWTICH_TYPE.FUNC_GRAB_RANKLIST) then
+ --        return;
+ --    end
+    local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+    local data = GetIntimeTop();
+    data.roleid = roldID;
+    data.tid = rankTID;
+    data.pageid = pageIndex;
+    session:SendProtocol(data);
+end
+
+-- 弹幕列表
+function _M.GetBarrage(plotID)
+    local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+    local data = GetBarrage();
+    data.roleid = session:GetCharacterID();
+    data.tid = plotID;
+    session:SendProtocol(data);
+end
+
+-- 发弹幕
+function _M.PutBarrage(plotTime, plotID, msg)
+    local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+    local data = PutBarrage();
+    data.roleid = session:GetCharacterID();
+    data.tid = plotID;
+    data.barrage = Barrage();
+    data.barrage.plot_time = plotTime;
+    data.barrage.msg = msg;
+    session:SendProtocol(data);
+end
+-- 获取随机名字
+function _M.GetRandomRoleName()
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+	local hostPlayer = UEGlobal.GetHostPlayer();
+	if hostPlayer ~= nil then
+	    local data = GetRandomRoleName();
+		data.roleid = hostPlayer:GetCID();
+		data.gender = hostPlayer:GetGender();
+		session:SendProtocol(data);
+	end
+end
+
+function _M.GetChargeAwardInfo()
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+    local data = GetChargeAwardInfo()
+    data.roleid = UEGlobal.GetHostPlayerID()
+    data.accountid = session:GetAccountID()
+    data.uclient_sid = ENUM_NETDEF.SID_INVALID
+    session:SendProtocol(data)
+end
+
+function _M.AuctionOpenSelfShop()
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+    local data = AuctionOpenSelfShop();
+    data.roleid = UEGlobal.GetHostPlayerID()
+    session:SendProtocol(data);
+end
+
+function _M.AucionClose(auctionId)
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+    local data = AuctionClose();
+    data.roleid = UEGlobal.GetHostPlayerID();
+    data.auction_id = auctionId;
+    data.reason = 0;
+    session:SendProtocol(data);
+end
+
+function _M.GetVieAuctionItems(vieType)
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+ 	local data = GetVieAuctionItems();
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.vie_type = vieType;
+	session:SendProtocol(data);
+end
+
+function _M.SendCloseVieAuctionDialog()
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+ 	local data = VieAuctionPlayerCloseDialog();
+	data.roleid = UEGlobal.GetHostPlayerID();
+	session:SendProtocol(data);
+end
+
+function _M.GetArenaOffLineRecord(playerId)
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+ 	local data = GetPvpladderRecord();
+	data.roleid = playerId;
+	session:SendProtocol(data);
+end
+
+function _M.SendGetContendBossInfo()
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+ 	local data = GetContendBossInfo();
+	data.roleid = UEGlobal.GetHostPlayerID();
+	session:SendProtocol(data);
+end
+
+function _M.SendLeaguePlayerInvite(invitee)
+	if UEGlobal.CheckHostDead(true) then
+		return;
+	end
+
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+ 	local data = LeagueTeachInvite();
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.target_id = invitee;
+	session:SendProtocol(data);
+end
+
+function _M.SendLeaguePlayerInviteReply(inviter, agree, reason)
+	if UEGlobal.CheckHostDead(true) then
+		return;
+	end
+
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+ 	local data = LeagueTeachPlayerInviteReply();
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.inviter = inviter;
+	data.agree = agree;
+	data.reason = reason;
+	session:SendProtocol(data);
+end
+
+
+function _M.SendGetBuyItemID(itemID, param_type, param, param2)
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+
+ 	local data = ReqAddUEOrder();
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.accountid = session:GetAccountID();
+	data.good_id = itemID;
+	data.param_type = param_type;
+	data.param = param;
+	data.param2 = param2;
+	session:SendProtocol(data);
+end
+
+function _M.SendRedBagQuickReply(redbagID, index)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = RedBagQuickAck()
+	data.roleid = UEGlobal.GetHostPlayerID()
+	data.redbag_id = redbagID
+	data.ack_idx = index - 1
+	session:SendProtocol(data)
+end
+
+function _M.SendGetContendBossDmgRatioInfo()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetContendBossDmgRatioInfo()
+	data.roleid = UEGlobal.GetHostPlayerID()
+	session:SendProtocol(data)
+end
+
+-- league activity sign
+function _M.GetLeagueActivitySign()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetLeagueActivitySign()
+	data.roleid = UEGlobal.GetHostPlayerID()
+	session:SendProtocol(data)
+end
+
+function _M.SignLeagueActivitySign()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = SignLeagueActivitySign()
+	data.roleid = UEGlobal.GetHostPlayerID()
+	session:SendProtocol(data)
+end
+
+function _M.GetLadderHighAward(stage)--start from 0
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+	--[[self.roleid = 0;
+		self.stage = 0;--]]
+
+ 	local data = PvpLadderHighRankAward()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.stage = stage;
+	--Debug.LogValue(data, "PvpLadderHighRankAward");
+	session:SendProtocol(data)
+end
+
+function _M.GetMonthCard3BigAward(stage)--start from 0
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+	--[[self.roleid = 0;
+		self.stage = 0;--]]
+
+ 	local data = GetCoupleMonthCardAward();
+	data.roleid = UEGlobal.GetHostPlayerID();
+	-- Debug.LogValue(data, "GetCoupleMonthCardAward");
+	session:SendProtocol(data)
+end
+
+function _M.GetPveTopQuery(instance_tid)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = PVETopQuery()
+	data.instance_tid = instance_tid;
+	data.roleid = UEGlobal.GetHostPlayerID();
+	session:SendProtocol(data)
+end
+
+function _M.GetMobaSeasonInfo()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetMobaSeasonInfo()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	session:SendProtocol(data)
+end
+
+function _M.GetFortuneCatLuckyDrawInfo()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetFortuneCatLuckyDrawInfo()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	session:SendProtocol(data)
+end
+
+
+function _M.GetKnockGoldBrickInfo()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetKnockGoldBrickInfo()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+
+	session:SendProtocol(data)
+end
+
+-- marry
+function _M.GetCoupleInfo(couple_id)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetCoupleInfo()
+	data.roleid = UEGlobal.GetHostPlayerID()
+	data.couple_id = couple_id
+	session:SendProtocol(data)
+end
+
+function _M.MarryDivorce()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = MarryDivorce()
+	data.roleid = UEGlobal.GetHostPlayerID()
+	session:SendProtocol(data)
+end
+
+function _M.AgreeWeddingGuestApply(target, isAgree)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = MarryCereGuestApplyHandle()
+	data.roleid = UEGlobal.GetHostPlayerID()
+	data.guestid = target
+	data.agree = isAgree == true and 1 or 0
+	session:SendProtocol(data)
+end
+
+function _M.ApplyJoinWedding(coupleID)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = MarryCereGuestApply()
+	data.roleid = UEGlobal.GetHostPlayerID()
+	data.couple_id = coupleID
+	session:SendProtocol(data)
+end
+
+function _M.WeddingBuyGuestTimes(addnum)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = MarryCereGuestBuy()
+	data.roleid = UEGlobal.GetHostPlayerID()
+	data.add = addnum
+	session:SendProtocol(data)
+end
+
+function _M.WeddingInviteGuest(target)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = MarryCereGuestInvite()
+	data.roleid = UEGlobal.GetHostPlayerID()
+	data.guest = target
+	session:SendProtocol(data)
+end
+
+function _M.OrderWedding(day, timeIdx)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = MarryCeremoneyOrder()
+	data.roleid = UEGlobal.GetHostPlayerID()
+	data.day = day
+	data.time_idx = timeIdx - 1
+	session:SendProtocol(data)
+end
+
+function _M.GetOrderedList()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetMarryCereOrderTable()
+	data.roleid = UEGlobal.GetHostPlayerID()
+	session:SendProtocol(data)
+end
+
+function _M.EnterMarryWedding()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = EnterMarryCere()
+	data.roleid = UEGlobal.GetHostPlayerID()
+	session:SendProtocol(data)
+end
+
+function _M.CallCouple()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = CoupleCall()
+	data.roleid = UEGlobal.GetHostPlayerID()
+	session:SendProtocol(data)
+end
+
+function _M.CoupleGoto(isAgree)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = CoupleGoto()
+	data.roleid = UEGlobal.GetHostPlayerID()
+	data.res = isAgree == true and 1 or 2
+	session:SendProtocol(data)
+end
+
+function _M.GetCoupleAllGiftSort()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetCoupleAllGiftSort()
+	data.roleid = UEGlobal.GetHostPlayerID()
+	session:SendProtocol(data)
+end
+
+
+-- 3V3相关
+-- 获取战队成员信息
+function _M.GetArenaTeamMemberInfo()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetArenaTeamMemberInfo()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	session:SendProtocol(data)
+end
+
+-- 获取申请列表
+function _M.GetArenaTeamApplyList()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetArenaTeamApplyList()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	session:SendProtocol(data)
+end
+
+-- 获取推荐列表
+function _M.GetArenaTeamRecommendList()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = ArenaTeamGetRecommendList()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	session:SendProtocol(data)
+end
+
+-- 申请加入战队
+function _M.ApplyJoinArenaTeam(teamID)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = ApplyJoinArenaTeam()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.arena_team_id = teamID;
+	session:SendProtocol(data)
+end
+
+-- 邀请加入战队
+function _M.ArenaTeamInvite(playerID)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = ArenaTeamInvite()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.target_player_id = playerID;
+	session:SendProtocol(data)
+end
+
+-- 被邀请人同意加入战队
+function _M.AgreeJoinArenaTeam(teamID, inviterID, agree)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = AgreeJoinArenaTeam()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.arena_team_id = teamID;
+	data.inviter_id = inviterID;
+	data.agree = agree;
+	session:SendProtocol(data)
+end
+
+-- 队长审核申请
+function _M.ArenaTeamAuditApply(playerID, agree)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = ArenaTeamAuditApply()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.apply_player_id = playerID;
+	data.agree = agree;
+
+	session:SendProtocol(data)
+end
+
+-- 退出战队/解散战队
+function _M.WithdrawArenaTeam()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = WithdrawArenaTeam()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	session:SendProtocol(data)
+end
+
+-- 踢出战队
+function _M.ArenaTeamExpel(playerID)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = ArenaTeamExpel()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.target_player_id = playerID;
+	session:SendProtocol(data)
+end
+
+-- 战队传位
+function _M.ArenaTeamDemise(playerID)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = ArenaTeamDemise()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.target_player_id = playerID;
+	session:SendProtocol(data)
+end
+
+-- 修改战队宣言
+function _M.ModifyArenaTeamAnnounce(newAnnounce)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = ModifyArenaTeamAnnounce()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.announce = newAnnounce;
+	session:SendProtocol(data)
+end
+
+-- 获取战队信息
+function _M.ArenaTeamGet()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = ArenaTeamGet()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	session:SendProtocol(data)
+end
+
+-- 设置限制
+function _M.ArenaTeamSetApplyLimit(hostArenaTeam)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = ArenaTeamSetApplyLimit()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.limit.level = hostArenaTeam:GetApplyLimitLevel();
+	data.limit.fight_value = hostArenaTeam:GetApplyLimitFightPower();
+	data.limit.prof_mask = hostArenaTeam:GetApplyProfMask();
+	data.limit.forbidden = hostArenaTeam:GetApplyForbidden() and 1 or 0;
+	session:SendProtocol(data)
+end
+
+-- 招募喊话
+function _M.ArenaTeamBroadInvite(arenaTeamID)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = ArenaTeamBroadInvite()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.arena_team_id = arenaTeamID;
+	session:SendProtocol(data)
+end
+
+-- 获取战队列表
+function _M.GetArenaTeamBasicInfoList(search_reason, searchStr, clusterID)
+	if searchStr == nil then searchStr = "" end
+	if clusterID == nil then clusterID = 0 end
+
+	-- 与服务器约定，如果查询本服信息，cluster_id = 0
+	clusterID = (clusterID > 0 and clusterID == UEGlobal.GetHostServerClusterID()) and 0 or clusterID;
+
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetArenaTeamBasicInfoList()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.search_key = searchStr;
+	data.reason = search_reason;
+	data.cluster_id = clusterID;
+
+	session:SendProtocol(data)
+end
+
+-- 获取观察结婚
+function _M.GetPlayerCouple(targetID, couple_id)
+	if targetID == nil then targetID = 0 end
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+ 	local data = GetPlayerCouple()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.target = targetID;
+	data.couple_id = couple_id;
+
+	session:SendProtocol(data)
+end
+
+-- 获取时间信息
+-- 获取节点，打开季后赛主界面，上线，每天5点
+function _M.GetPlayoffInfo()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetPlayoffInfo()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	session:SendProtocol(data)
+end
+
+-- 请求公示信息
+function _M.GetPlayoffAnnounce()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetPlayoffAnnounce()
+	data.roleid = UEGlobal.GetHostPlayerID();
+	session:SendProtocol(data)
+end
+
+-- 请求对战信息
+function _M.GetTeamArenaSeasonBattleInfoTable(serverType, groupIndex)
+	if groupIndex == nil then groupIndex = 0 end
+
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetTeamArenaSeasonBattleInfoTable()
+ 	data.role_id = UEGlobal.GetHostPlayerID();
+	data.table_type = serverType;
+	data.table_group = groupIndex;
+
+	session:SendProtocol(data)
+end
+
+-- 请求小组赛排行榜
+function _M.GetTeamArenaSeasonGroupTopTable()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetTeamArenaSeasonGroupTopTable()
+ 	data.role_id = UEGlobal.GetHostPlayerID();
+
+	session:SendProtocol(data)
+end
+
+-- 获取季后赛押注信息
+function _M.GetSelfBetInfo()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetSelfBetInfo()
+ 	data.roleid = UEGlobal.GetHostPlayerID();
+
+	session:SendProtocol(data)
+end
+
+-- 季后赛押注领奖
+function _M.GetTeamArenaPlayoffBetAward(stage, battleIndex)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetTeamArenaPlayoffBetAward()
+ 	data.roleid = UEGlobal.GetHostPlayerID();
+ 	data.stage = stage;
+	data.battle_idx = battleIndex;
+
+	session:SendProtocol(data)
+end
+
+-- 季后赛押注
+function _M.TeamArenaPlayoffBet(stage, battleIndex, teamIndex, deltaCoin)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = TeamArenaPlayoffBet()
+ 	data.roleid = UEGlobal.GetHostPlayerID();
+ 	data.stage = stage;
+ 	data.battle_idx = battleIndex;
+ 	data.team_idx = teamIndex;
+ 	data.delta_coin = deltaCoin;
+
+	session:SendProtocol(data)
+end
+
+-- 3V3季后赛往届风采
+function _M.PlayerGetPlayoffChampion()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = PlayerGetPlayoffChampion()
+ 	data.roleid = UEGlobal.GetHostPlayerID();
+
+	session:SendProtocol(data)
+end
+
+function _M.GetInstInfo(inst_tid)
+	if inst_tid == nil then inst_tid = 0 end -- SetDefaultValue
+
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetInstInfo()
+ 	data.roleid = UEGlobal.GetHostPlayerID();
+ 	data.inst_tid = inst_tid;
+ 	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+
+	session:SendProtocol(data)
+end
+
+-- 跨服炼狱岛
+function _M.GetCrossChiefInstInfo(inst_tid)
+	if inst_tid == nil then inst_tid = 0 end -- SetDefaultValue
+
+	if UEPlayerUtil.IsHostInTeamArenaInstance() then
+	    return;
+	end
+
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetCrossChiefInstInfo()
+ 	data.roleid = UEGlobal.GetHostPlayerID();
+ 	data.inst_tid = inst_tid;
+ 	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+
+	session:SendProtocol(data)
+end
+
+-- 获取首领击杀信息
+function _M.GetBossSprintInfo()
+	if UEGlobal.IsServerCentral() then
+	    return;
+	end
+
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetSprintBossInfo()
+ 	data.roleid = UEGlobal.GetHostPlayerID();
+	session:SendProtocol(data)
+end
+
+-- 跨服功能服务器分组
+function _M.GetClusterGroup()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetClusterGroup()
+ 	data.roleid = UEGlobal.GetHostPlayerID();
+ 	data.uclient_sid = ENUM_NETDEF.SID_INVALID;
+	session:SendProtocol(data)
+end
+
+function _M.GetGroupPurchaseInfo()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+	
+	local data = GetCrossGroupBuyingInfo()
+ 	data.roleid = UEGlobal.GetHostPlayerID();
+	session:SendProtocol(data)
+end
+
+function _M.GetCloudNineTopInfo(isCross)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+
+ 	local data = GetWorldRecord()
+ 	data.roleid = UEGlobal.GetHostPlayerID()
+ 	if (isCross == true) then
+		data.key = ENUM_WORLD_RECORD_KEY_TYPE.WORLD_RECORD_KEY_CROSS_INTERSTELLAR
+ 	else
+ 		data.key = ENUM_WORLD_RECORD_KEY_TYPE.WORLD_RECORD_KEY_INTERSTELLAR
+ 	end
+	session:SendProtocol(data)
+end
+
+function _M.GetClocklikeInfo()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+	
+	local data = GetClocklikeInfo()
+ 	data.roleid = UEGlobal.GetHostPlayerID();
+	session:SendProtocol(data)
+end
+
+
+function _M.GetTreasureAppraisalInfo()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+	
+	local data = GetTreasureAppraisalInfo()
+ 	data.roleid = UEGlobal.GetHostPlayerID();
+ 	data.uclient_sid = 0;
+	session:SendProtocol(data)
+end
+
+-- GET ETERNAL LEAGUE INFO
+function _M.GetEternalLeagueInfo(worldTid, leagueID)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+	
+	local data = GetEternalLeagueInfo()
+ 	data.world_tid = worldTid;
+ 	data.league_id = leagueID;
+ 	data.uclient_sid = 0;
+	session:SendProtocol(data)
+end
+
+-- GET ETERNAL NEAR BY NUM
+function _M.GetEternalNearbyNum(worldTid)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+	
+	local data = GetEternalNearbyNum()
+ 	data.world_tid = worldTid;
+ 	data.uclient_sid = 0;
+	session:SendProtocol(data)
+end
+
+-- 赤晶矿洞获取公会里的协助请求
+function _M.SendGetRobMineAssistRequest(requestPlayerInfo)
+	local paramString = "0";
+	if requestPlayerInfo then paramString = "1"; end
+	
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+	
+	local leagueID = 0;
+	local hostPlayer = UEGlobal.GetHostPlayer();
+	if hostPlayer ~= nil then
+		leagueID = hostPlayer:GetLeagueID();
+	end
+	
+	if leagueID == 0 then
+		return;
+	end
+	
+	local data = GetRobMineAssistRequest()
+ 	data.roleid = UEGlobal.GetHostPlayerID();
+ 	data.league_id = leagueID;
+ 	data.paramstring = paramString;
+	session:SendProtocol(data)
+end
+
+-- 赤晶矿洞谁感谢过我【上线请求】
+function _M.SendGetRoleRobMineAcknowledgement()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+	
+	local data = GetRoleRobMineAcknowledgement()
+ 	data.roleid = UEGlobal.GetHostPlayerID();
+	session:SendProtocol(data)
+end
+
+-- 赤晶矿洞 上线请求
+function _M.SendGetRobMineRecord()
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+	
+	local data = GetRoleRobMineRecord()
+ 	data.roleid = UEGlobal.GetHostPlayerID();
+	session:SendProtocol(data)
+end
+
+-- 赤晶矿洞 感谢并领奖
+function _M.SendGetRobMineAcknowledgementAssist(robMineIndex, assistRoleID, textIndex)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+	
+	local data = RobMineAcknowledgementAssist()
+ 	data.roleid = UEGlobal.GetHostPlayerID();
+ 	data.record_no = robMineIndex;
+ 	data.assist_roleid = assistRoleID;
+ 	data.text_index = textIndex;
+	session:SendProtocol(data)
+end
+
+-- 请求协助
+function _M.SendRequestRobMineAssist(robMineIndex)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+	
+	local leagueID = 0;
+	local hostPlayer = UEGlobal.GetHostPlayer();
+	if hostPlayer ~= nil then
+		leagueID = hostPlayer:GetLeagueID();
+	end
+	
+	if leagueID == 0 then
+		return;
+	end
+	
+	local data = RequestRobMineAssist()
+ 	data.roleid = UEGlobal.GetHostPlayerID();
+ 	data.record_no = robMineIndex;
+ 	data.league_id = leagueID;
+	session:SendProtocol(data)
+end
+
+-- 接受感谢
+function _M.SendAcceptRobMineAcknowledgement(sendThanksPlayerId, index)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+	
+	local data = AcceptRobMineAcknowledgement()
+ 	data.roleid = UEGlobal.GetHostPlayerID();
+	data.index = index;
+	data.acknowledgement_roleid = sendThanksPlayerId;
+	session:SendProtocol(data)
+end
+
+-- 新公会boss请求个人排行榜信息
+function _M.SendRequestApLeagueBossRankInfo(leagueID)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+	
+	local data = GetLeagueBossInfo();
+	data.league_id = leagueID;
+	session:SendProtocol(data);
+end
+
+function _M.GetDropRecord(key)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+	
+	local data = GetDropRecord();
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.key = key;
+	--Debug.LogValue(data, "GetDropRecord data");
+	session:SendProtocol(data);
+end
+
+function _M.GetBossKillRecord(boss_tid)
+	local session = UEGlobal.GetSession()
+	if (session == nil) then
+		return nil
+	end
+	
+	local data = GetBossRecord();
+	data.boss_tid = boss_tid;
+	session:SendProtocol(data);
+end
+
+-- 获取裂隙争锋公会人数
+function _M.GetContendBossLeagueInfo(boss_tid)
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+
+	if boss_tid == nil or boss_tid <= 0 then return end
+
+	local data = GetContendBossLeagueInfo();
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.boss_tid = boss_tid;
+	session:SendProtocol(data);
+end
+
+function _M.GetAllContendBossLeagueInfo()
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+
+	local data = GetContendBossLeagueInfo();
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.boss_tid = 0;
+	session:SendProtocol(data);
+end
+
+
+-- 获取上架到公会的商品
+function _M.GetLeagueAuctionInfo(vie_reason)
+	local session = UEGlobal.GetSession();
+	if (session == nil) then
+		return;
+	end
+	local data = GetLeagueAuctionInfo();
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.vie_reason = vie_reason;
+	session:SendProtocol(data);
+end
+
+-- 裂隙争锋集火
+function _M.SendContendBossPointFire(boss_tid, inst_tid)
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+
+	local data = ContendBossPointFire();
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.target = boss_tid;
+	data.inst_tid = inst_tid;
+	session:SendProtocol(data);
+end
+
+-- 获取裂隙争锋集火目标
+function _M.GetContendBossPointFire(dungeonId)
+	local session = UEGlobal.GetSession();
+	if session == nil then
+		return;
+	end
+
+	local data = GetContendBossLeagueTarget();
+	data.roleid = UEGlobal.GetHostPlayerID();
+	data.inst_tid = dungeonId;
+	session:SendProtocol(data);
+end

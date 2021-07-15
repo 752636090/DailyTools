@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "SuvF3GBQIKoVgGERJ8ppx6mHeB2q0AN01FvbWh5Pqc9xN6vN4H6XwdLBya2GkypKBzKF16ZspryFHdpRbq4TEA==",
+  "dgSpecHash": "+TV3T3LTiFWUNU8JKZH79FLn33Z7me9P+FEoA+H3Lu1f6vl9A3HWEGE2Pi4J11Iz5Qe3VonwTc8XcWBGLyrYFg==",
   "success": true,
-  "projectFilePath": "E:\\Users\\zjk\\source\\repos\\DailyTools\\Rename\\Rename.csproj",
+  "projectFilePath": "E:\\DailyTools\\Rename\\Rename.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

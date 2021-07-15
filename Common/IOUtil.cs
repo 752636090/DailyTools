@@ -32,7 +32,7 @@ namespace Common
             return GetFileTextArr(GetFileText(file.FullName));
         }
 
-        private static string[] GetFileTextArr(string text)
+        public static string[] GetFileTextArr(string text)
         {
             return text.Replace("\r\n", "\n").Split("\n");
         }
@@ -45,6 +45,12 @@ namespace Common
         /// <param name="content"></param>
         public static void CreateTextFile(string filePath, string content)
         {
+            string directory = filePath.Substring(0, filePath.LastIndexOf("\\"));
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
             DeleteFile(filePath);
 
             using (FileStream fs = File.Create(filePath))
