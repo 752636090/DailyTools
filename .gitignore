@@ -56,4 +56,5 @@ Server/.DS_Store
 /Unity/Unity.Model.csproj
 /Unity/Unity.ModelView.csproj
 /Unity/Unity.ThirdParty.csproj
+src/
 /src
