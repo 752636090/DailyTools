@@ -15,7 +15,7 @@ namespace MGameUtil
         private static List<FileInfo> fileLst;
         private static Regex regexClass = new("class \"(.*)\"");
         private static Regex regexFunctionMine = new(@"function (.*):(.*)\((.*)\)");
-        private static Regex regexFunctionStatic = new(@"function (.*).(.*)\((.*)\)");
+        private static Regex regexFunctionMineStatic = new(@"function (.*).(.*)\((.*)\)");
         private static Regex regexFunctionOther = new(@"function (.*)\((.*)\)");
 
 
@@ -38,6 +38,12 @@ namespace MGameUtil
         public static void ConvertToOther()
         {
             Init();
+
+            if (!IsNeedConvert(fileLst, regexFunctionOther))
+            {
+                return;
+            }
+
             foreach (FileInfo file in fileLst)
             {
                 StringBuilder sb = new StringBuilder();
@@ -72,7 +78,7 @@ namespace MGameUtil
                     }
                     else
                     {
-                        Match matchFuncStatic = regexFunctionStatic.Match(line);
+                        Match matchFuncStatic = regexFunctionMineStatic.Match(line);
                         if (matchFuncStatic.Success)
                         {
                             string className = classStack.Peek().Item1;
@@ -93,6 +99,12 @@ namespace MGameUtil
         public static void ConvertToMine()
         {
             Init();
+
+            if (!IsNeedConvert(fileLst, regexFunctionMine))
+            {
+                return;
+            }
+
             foreach (FileInfo file in fileLst)
             {
                 StringBuilder sb = new StringBuilder();
@@ -169,6 +181,29 @@ namespace MGameUtil
             #endregion
 
             return false;
+        }
+
+        private static bool IsNeedConvert(List<FileInfo> fileLst, Regex errorRegex)
+        {
+            Console.WriteLine("开始检查是否需要转换");
+            bool needConvert = true;
+            foreach (FileInfo file in fileLst)
+            {
+                if (!_IsNeedConvert(file, errorRegex))
+                {
+                    Console.WriteLine($"{file.FullName}已经转换过了，接下来所有文件都不转换");
+                    needConvert = false;
+                }
+            }
+            Console.WriteLine("检查结束，开始转换");
+            return needConvert;
+        }
+
+        private static bool _IsNeedConvert(FileInfo file, Regex errorRegex)
+        {
+            string content = IOUtil.GetFileText(file.FullName);
+            Match matchError = errorRegex.Match(content);
+            return !(matchError.Success && !matchError.Groups[1].Value.Contains(":"));
         }
     }
 }
