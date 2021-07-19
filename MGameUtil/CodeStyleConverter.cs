@@ -72,7 +72,7 @@ namespace MGameUtil
         {
             Init();
 
-            if (!IsNeedConvert(fileLst, regexFunctionOther))
+            if (!IsNeedConvert(fileLst, false))
             {
                 return;
             }
@@ -112,8 +112,8 @@ namespace MGameUtil
                     else
                     {
                         Match matchFuncStatic = regexFunctionMineStatic.Match(line);
-                        if (matchFuncStatic.Success && !line.Contains("function (") && !line.Contains("local function") && (line.StartsWith("\t") || line.StartsWith("    "))
-                            && classStack.Count > 0)
+                        if (matchFuncStatic.Success && line.ReplaceFirst("__DebugStatic__()", "").Trim().StartsWith("function ") && (line.StartsWith("\t") || line.StartsWith("    "))
+                        && classStack.Count > 0)
                         {
                             string className = classStack.Peek().Item1;
                             line = line.ReplaceFirst($"function {className}.", "function ");
@@ -134,7 +134,7 @@ namespace MGameUtil
         {
             Init();
 
-            if (!IsNeedConvert(fileLst, regexFunctionMine))
+            if (!IsNeedConvert(fileLst, true))
             {
                 return;
             }
@@ -155,10 +155,14 @@ namespace MGameUtil
                     }
 
                     Match matchFunc = regexFunctionOther.Match(line);
-                    if (matchFunc.Success && !line.Contains("function (") && !line.Contains("local function") && (line.StartsWith("\t") || line.StartsWith("    "))
+                    if (matchFunc.Success && line.ReplaceFirst("__DebugStatic__()", "").Trim().StartsWith("function ") && (line.StartsWith("\t") || line.StartsWith("    "))
                         && classStack.Count > 0)
                     {
                         string funcName = matchFunc.Groups[1].Value;
+                        if (funcName.Contains("("))
+                        {
+                            funcName = funcName.Substring(0, funcName.IndexOf("("));
+                        }
                         if (!funcName.Contains("(") && !funcName.Contains(")"))
                         {
                             string className = classStack.Peek().Item1;
@@ -166,11 +170,11 @@ namespace MGameUtil
                             line = line.ReplaceFirst($"{funcName}", $"{className}{symbol}{funcName}");
                             if (matchFunc.Groups[2].Value == "self")
                             {
-                                line = line.Replace($"{funcName}(self)", $"{funcName}()");
+                                line = line.ReplaceFirst($"{funcName}(self)", $"{funcName}()");
                             }
                             else
                             {
-                                line = line.Replace($"self, ", $"").Replace($"self,", $"").Replace($"self , ", $"").Replace($"self ,", $"");
+                                line = line.ReplaceFirst($"self, ", $"").ReplaceFirst($"self,", $"").ReplaceFirst($"self , ", $"").ReplaceFirst($"self ,", $"");
                             }
                         }
                     }
@@ -223,13 +227,13 @@ namespace MGameUtil
             return false;
         }
 
-        private static bool IsNeedConvert(List<FileInfo> fileLst, Regex errorRegex)
+        private static bool IsNeedConvert(List<FileInfo> fileLst, bool isToMine)
         {
             Console.WriteLine("开始检查是否需要转换");
             bool needConvert = true;
             foreach (FileInfo file in fileLst)
             {
-                if (!_IsNeedConvert(file, errorRegex))
+                if (!_IsNeedConvert(file, isToMine))
                 {
                     Console.WriteLine($"{file.FullName}已经转换过了，接下来所有文件都不转换");
                     needConvert = false;
@@ -239,17 +243,19 @@ namespace MGameUtil
             return needConvert;
         }
 
-        private static bool _IsNeedConvert(FileInfo file, Regex errorRegex)
+        private static bool _IsNeedConvert(FileInfo file, bool isToMine)
         {
-            string[] content = IOUtil.GetFileTextArr(file.FullName);
+            string[] content = IOUtil.GetFileTextArr(file);
+            Regex regexError = isToMine ? regexFunctionMine : regexFunctionOther;
             foreach (string line in content)
             {
-                Match matchError = errorRegex.Match(line);
+                if (!line.Replace("__DebugStatic__()", "").Trim().StartsWith("function")) continue;
+                Match matchError = regexError.Match(line);
                 if (matchError.Success)
                 {
                     string matchStr = matchError.Groups[0].Value;
                     string match1 = matchError.Groups[1].Value;
-                    if (!match1.Contains(":") && !line.Contains("end"))
+                    if (!match1.Contains(" ") && !match1.Contains(":") && !match1.Contains("."))
                     {
                         return false;
                     }
@@ -264,18 +270,25 @@ namespace MGameUtil
 class "DlgAdventureName" (function(_ENV)
     inherit (UEDlgPanel)
 
-    class "TestClass" (function(_ENV)
+    class "ClassA" (function(_ENV)
         ----------------------------------------------
         ------------------ Property ------------------
         ----------------------------------------------
+        
     
         __DebugArguments__{}
-        function TestClass(self)
+        function ClassA(self)
             Super(self);
+			self.TestAction = nil;
         end
 
         __DebugArguments__{ }
-        function TestFunc(self, data)
+        function Func1(self)
+            
+        end
+
+        __DebugArguments__{ }
+        function _Func2(self)
             
         end
         
@@ -285,9 +298,7 @@ class "DlgAdventureName" (function(_ENV)
         end
         
         __DebugArguments__{ }
-        __DebugStatic__() function TestStatic2(data)
-            
-        end
+        __DebugStatic__() function TestStatic2(data) self.TestAction = function () Debug.Log("111") end end
     
         ----------------------------------------------
         ------------------- Method -------------------

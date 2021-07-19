@@ -85,7 +85,14 @@ namespace Common
         public static string ReplaceFirst(this string s, string oldValue, string newValue)
         {
             int index = s.IndexOf(oldValue);
-            return s.Remove(index, oldValue.Length).Insert(index, newValue);
+            if (index > -1)
+            {
+                return s.Remove(index, oldValue.Length).Insert(index, newValue);
+            }
+            else
+            {
+                return s;
+            }
         }
     }
 }
