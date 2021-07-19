@@ -7,23 +7,27 @@ namespace MGameUtil
     {
         static void Main(string[] args)
         {
-            string key = "";
-
-            foreach (string item in args)
+            Console.WriteLine(args);
+            if (args != null && args.Length > 0)
             {
-                Thread.Sleep(20);
-                Handle(item);
+                foreach (string item in args)
+                {
+                    Thread.Sleep(20);
+                    string[] inputs = item.Split('|');
+                    Handle(inputs[0], inputs[1]);
+                }
+                return;
             }
 
             while (true)
             {
                 Thread.Sleep(20);
-                key = Console.ReadLine();
+                string key = Console.ReadLine();
                 Handle(key);
             }
         }
 
-        private static void Handle(string key)
+        private static void Handle(string key, string param = null)
         {
             if (key == "1")
             {
@@ -43,11 +47,11 @@ namespace MGameUtil
             }
             else if (key == "5")
             {
-                CodeStyleConverter.ConvertToOther();
+                CodeStyleConverter.ConvertToOther(param != null, param);
             }
             else if (key == "6")
             {
-                CodeStyleConverter.ConvertToMine();
+                CodeStyleConverter.ConvertToMine(param != null, param);
             }
         }
     }

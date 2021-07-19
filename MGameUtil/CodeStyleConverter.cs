@@ -68,9 +68,17 @@ namespace MGameUtil
             Console.WriteLine("收集文件完成");
         }
 
-        public static void ConvertToOther()
+        public static void ConvertToOther(bool isAuto = false, string filePath = null)
         {
-            Init();
+            if (isAuto)
+            {
+                fileLst = new List<FileInfo>();
+                fileLst.Add(new FileInfo(filePath));
+            }
+            else
+            {
+                Init();
+            }
 
             if (!IsNeedConvert(fileLst, false))
             {
@@ -130,9 +138,17 @@ namespace MGameUtil
             Console.WriteLine($"全部转换完成");
         }
 
-        public static void ConvertToMine()
+        public static void ConvertToMine(bool isAuto = false, string filePath = null)
         {
-            Init();
+            if (isAuto)
+            {
+                fileLst = new List<FileInfo>();
+                fileLst.Add(new FileInfo(filePath));
+            }
+            else
+            {
+                Init();
+            }
 
             if (!IsNeedConvert(fileLst, true))
             {
