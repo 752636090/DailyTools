@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace MGameUtil
@@ -7,7 +9,6 @@ namespace MGameUtil
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(args);
             if (args != null && args.Length > 0)
             {
                 foreach (string item in args)
@@ -52,6 +53,22 @@ namespace MGameUtil
             else if (key == "6")
             {
                 CodeStyleConverter.ConvertToMine(param != null, param);
+            }
+            else if (new Regex(@"(.*)\|(.*)").IsMatch(key))
+            {
+                string[] input = key.Split("|");
+                string exePath;
+                switch (int.Parse(input[0]))
+                {
+                    case 5:
+                    case 6:
+                        exePath = @"E:\DailyTools\MGameUtil\bin\Debug\net5.0\MGameUtil.exe";
+                        break;
+                    default:
+                        exePath = @"E:\DailyTools\MGameUtil\bin\Debug\net5.0\MGameUtil.exe";
+                        break;
+                }
+                Process.Start(exePath, new string[] { @$"{key}" });
             }
         }
     }
