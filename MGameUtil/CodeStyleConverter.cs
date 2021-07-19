@@ -13,7 +13,8 @@ namespace MGameUtil
     public static class CodeStyleConverter
     {
         private static List<FileInfo> fileLst;
-        private static Regex regexClass = new("class \"(.*)\"");
+        private static List<string> ignoreLst;
+        private static List<Regex> regexsClass = new() { new("class \"(.*)\""), new("interface \"(.*)\""), new("struct \"(.*)\"") };
         private static Regex regexFunctionMine = new(@"function (.*):(.*)\((.*)\)");
         private static Regex regexFunctionMineStatic = new(@"function (.*).(.*)\((.*)\)");
         private static Regex regexFunctionOther = new(@"function (.*)\((.*)\)");
@@ -22,6 +23,7 @@ namespace MGameUtil
         private static void Init()
         {
             fileLst = new List<FileInfo>();
+            ignoreLst = new();
 
             string configPath = AppDomain.CurrentDomain.BaseDirectory + "Configs\\CodeStyleConfig.xml";
             XDocument doc = XDocument.Load(configPath);
@@ -33,6 +35,37 @@ namespace MGameUtil
                 FileInfo file = new(path);
                 fileLst.Add(file);
             }
+
+            IEnumerable<XElement> ignoreElems = doc.Root.Element("Ignore").Elements("Item");
+            foreach (XElement item in ignoreElems)
+            {
+                ignoreLst.Add(item.Attribute("Name").Value);
+            }
+
+            Console.WriteLine("收集文件中");
+            IEnumerable<XElement> folderElems = doc.Root.Element("Folders").Elements("Item");
+            foreach (XElement item in folderElems)
+            {
+                string path = item.Attribute("Path").Value;
+                FileInfo[] files = new DirectoryInfo(path).GetFiles("*.lua", SearchOption.AllDirectories);
+                foreach (FileInfo file in files)
+                {
+                    bool isAdd = true;
+                    foreach (string ignore in ignoreLst)
+                    {
+                        if (file.FullName.Contains(ignore) || file.IsReadOnly || IOUtil.IsFileInUse(file.FullName))
+                        {
+                            isAdd = false;
+                            break;
+                        }
+                    }
+                    if (isAdd)
+                    {
+                        fileLst.Add(file);
+                    }
+                }
+            }
+            Console.WriteLine("收集文件完成");
         }
 
         public static void ConvertToOther()
@@ -53,36 +86,37 @@ namespace MGameUtil
                 {
                     string line = content[iLine];
 
-                    if (CollectClassInfo(line, classStack))
+                    if (line.Trim().StartsWith("--") || CollectClassInfo(line, classStack))
                     {
                         sb.AppendLine(line);
                         continue;
                     }
 
-
                     Match matchFunc = regexFunctionMine.Match(line);
-                    if (matchFunc.Success)
+                    if (matchFunc.Success && !line.Contains("function (") && !line.Contains("local function") && (line.StartsWith("\t") || line.StartsWith("    "))
+                        && classStack.Count > 0)
                     {
                         string className = classStack.Peek().Item1; // matchFunc.Groups[1].Value也是className
                         string funcName = matchFunc.Groups[2].Value;
                         string param = matchFunc.Groups[3].Value;
                         line = line.Replace($"{matchFunc.Groups[1].Value}:", "");
-                        if (matchFunc.Groups[3].Value == "")
+                        if (param == "")
                         {
                             line = line.Replace($"{funcName}()", $"{funcName}(self)");
                         }
                         else
                         {
-                            line = line.Replace($"{param}", $"self, {param}");
+                            line = line.ReplaceFirst($"({param}", $"(self, {param}");
                         }
                     }
                     else
                     {
                         Match matchFuncStatic = regexFunctionMineStatic.Match(line);
-                        if (matchFuncStatic.Success)
+                        if (matchFuncStatic.Success && !line.Contains("function (") && !line.Contains("local function") && (line.StartsWith("\t") || line.StartsWith("    "))
+                            && classStack.Count > 0)
                         {
                             string className = classStack.Peek().Item1;
-                            line = line.Replace($"{className}.", "");
+                            line = line.ReplaceFirst($"function {className}.", "function ");
                         }
                     }
 
@@ -114,27 +148,30 @@ namespace MGameUtil
                 {
                     string line = content[iLine];
 
-                    if (CollectClassInfo(line, classStack))
+                    if (line.Trim().StartsWith("--") || CollectClassInfo(line, classStack))
                     {
                         sb.AppendLine(line);
                         continue;
                     }
 
-
                     Match matchFunc = regexFunctionOther.Match(line);
-                    if (matchFunc.Success)
+                    if (matchFunc.Success && !line.Contains("function (") && !line.Contains("local function") && (line.StartsWith("\t") || line.StartsWith("    "))
+                        && classStack.Count > 0)
                     {
-                        string className = classStack.Peek().Item1;
                         string funcName = matchFunc.Groups[1].Value;
-                        string symbol = line.Contains($"(self") ? ":" : ".";
-                        line = line.Replace($"{funcName}", $"{className}{symbol}{funcName}");
-                        if (matchFunc.Groups[2].Value == "self")
+                        if (!funcName.Contains("(") && !funcName.Contains(")"))
                         {
-                            line = line.Replace($"{funcName}(self)", $"{funcName}()");
-                        }
-                        else
-                        {
-                            line = line.Replace($"self, ", $"");
+                            string className = classStack.Peek().Item1;
+                            string symbol = line.Contains($"(self") ? ":" : ".";
+                            line = line.ReplaceFirst($"{funcName}", $"{className}{symbol}{funcName}");
+                            if (matchFunc.Groups[2].Value == "self")
+                            {
+                                line = line.Replace($"{funcName}(self)", $"{funcName}()");
+                            }
+                            else
+                            {
+                                line = line.Replace($"self, ", $"").Replace($"self,", $"").Replace($"self , ", $"").Replace($"self ,", $"");
+                            }
                         }
                     }
 
@@ -151,11 +188,14 @@ namespace MGameUtil
         private static bool CollectClassInfo(string line, Stack<(string, int)> classStack)
         {
             #region 获得类名
-            Match matchClass = regexClass.Match(line);
-            if (matchClass.Success)
+            foreach (Regex regex in regexsClass)
             {
-                classStack.Push((matchClass.Groups[1].Value, (line.Length - line.Replace("    ", "").Replace("\t", "").Length) / 4));
-                return true;
+                Match matchClass = regex.Match(line);
+                if (matchClass.Success)
+                {
+                    classStack.Push((matchClass.Groups[1].Value, (line.Length - line.Replace("    ", "").Replace("\t", "").Length) / 4));
+                    return true;
+                }
             }
             #endregion
 
@@ -201,9 +241,21 @@ namespace MGameUtil
 
         private static bool _IsNeedConvert(FileInfo file, Regex errorRegex)
         {
-            string content = IOUtil.GetFileText(file.FullName);
-            Match matchError = errorRegex.Match(content);
-            return !(matchError.Success && !matchError.Groups[1].Value.Contains(":"));
+            string[] content = IOUtil.GetFileTextArr(file.FullName);
+            foreach (string line in content)
+            {
+                Match matchError = errorRegex.Match(line);
+                if (matchError.Success)
+                {
+                    string matchStr = matchError.Groups[0].Value;
+                    string match1 = matchError.Groups[1].Value;
+                    if (!match1.Contains(":") && !line.Contains("end"))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 }

@@ -2,6 +2,19 @@
 <Root>
   <Files>
     <Item Path="E:\Unity\MGame\MProject\Assets\LuaFramework\Lua\UI\Dialogs\DlgAdventureName.lua" />
-    <Item Path="E:\Unity\MGame\MProject\Assets\LuaFramework\Lua\UI\3DText\UEHeadDlgMan.lua" />
+    <!--<Item Path="E:\Unity\MGame\MProject\Assets\LuaFramework\Lua\UI\3DText\UEHeadDlgMan.lua" />-->
   </Files>
+  <Folders>
+    <!--<Item Path="E:\Unity\MGame\MProject\Assets\LuaFramework" />-->
+  </Folders>
+  <Ignore>
+    <Item Name="StandardCoding.lua" />
+    <Item Name="md5.lua" />
+    <Item Name="AuctionPriceConfig.lua" />
+    <Item Name="\PLoop\" />
+    <Item Name="\PLoopExtend\" />
+    <Item Name="\3rd\" />
+    <Item Name="\inl\" />
+    <Item Name="\rpcdata\" />
+  </Ignore>
 </Root>

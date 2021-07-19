@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Common
@@ -79,6 +80,12 @@ namespace Common
                     DeepReplace(field.GetValue(obj), srcStr, targetStr);
                 }
             }
+        }
+
+        public static string ReplaceFirst(this string s, string oldValue, string newValue)
+        {
+            int index = s.IndexOf(oldValue);
+            return s.Remove(index, oldValue.Length).Insert(index, newValue);
         }
     }
 }
