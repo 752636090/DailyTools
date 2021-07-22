@@ -107,14 +107,17 @@ namespace MGameUtil
                         string className = classStack.Peek().Item1; // matchFunc.Groups[1].Value也是className
                         string funcName = matchFunc.Groups[2].Value;
                         string param = matchFunc.Groups[3].Value;
-                        line = line.Replace($"{matchFunc.Groups[1].Value}:", "");
-                        if (param == "")
+                        if (funcName.Trim() != "")
                         {
-                            line = line.Replace($"{funcName}()", $"{funcName}(self)");
-                        }
-                        else
-                        {
-                            line = line.ReplaceFirst($"({param}", $"(self, {param}");
+                            line = line.Replace($"{matchFunc.Groups[1].Value}:", "");
+                            if (param == "")
+                            {
+                                line = line.Replace($"{funcName}()", $"{funcName}(self)");
+                            }
+                            else
+                            {
+                                line = line.ReplaceFirst($"({param}", $"(self, {param}");
+                            } 
                         }
                     }
                     else
@@ -175,22 +178,25 @@ namespace MGameUtil
                         && classStack.Count > 0)
                     {
                         string funcName = matchFunc.Groups[1].Value;
-                        if (funcName.Contains("("))
+                        if (funcName.Trim() != "")
                         {
-                            funcName = funcName.Substring(0, funcName.IndexOf("("));
-                        }
-                        if (!funcName.Contains("(") && !funcName.Contains(")"))
-                        {
-                            string className = classStack.Peek().Item1;
-                            string symbol = line.Contains($"(self") ? ":" : ".";
-                            line = line.ReplaceFirst($"{funcName}", $"{className}{symbol}{funcName}");
-                            if (matchFunc.Groups[2].Value == "self")
+                            if (funcName.Contains("("))
                             {
-                                line = line.ReplaceFirst($"{funcName}(self)", $"{funcName}()");
+                                funcName = funcName.Substring(0, funcName.IndexOf("("));
                             }
-                            else
+                            if (!funcName.Contains("(") && !funcName.Contains(")"))
                             {
-                                line = line.ReplaceFirst($"self, ", $"").ReplaceFirst($"self,", $"").ReplaceFirst($"self , ", $"").ReplaceFirst($"self ,", $"");
+                                string className = classStack.Peek().Item1;
+                                string symbol = line.Contains($"(self") ? ":" : ".";
+                                line = line.ReplaceFirst($"{funcName}", $"{className}{symbol}{funcName}");
+                                if (matchFunc.Groups[2].Value == "self")
+                                {
+                                    line = line.ReplaceFirst($"{funcName}(self)", $"{funcName}()");
+                                }
+                                else
+                                {
+                                    line = line.ReplaceFirst($"self, ", $"").ReplaceFirst($"self,", $"").ReplaceFirst($"self , ", $"").ReplaceFirst($"self ,", $"");
+                                }
                             }
                         }
                     }
@@ -271,8 +277,10 @@ namespace MGameUtil
                 {
                     string matchStr = matchError.Groups[0].Value;
                     string match1 = matchError.Groups[1].Value;
-                    if (!match1.Contains(" ") && !match1.Contains(":") && !match1.Contains("."))
+                    string funcName = isToMine ? matchError.Groups[2].Value : matchError.Groups[1].Value;
+                    if (!match1.Contains(" ") && !match1.Contains(":") && !match1.Contains(".") && funcName.Trim() != "")
                     {
+                        Console.WriteLine(line);
                         return false;
                     }
                 }
