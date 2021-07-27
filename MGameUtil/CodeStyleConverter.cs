@@ -219,7 +219,12 @@ namespace MGameUtil
                 Match matchClass = regex.Match(line);
                 if (matchClass.Success)
                 {
-                    classStack.Push((matchClass.Groups[1].Value, (line.Length - line.Replace("    ", "").Replace("\t", "").Length) / 4));
+                    int tabCount = 0;
+                    int iNotEmpty = line.IndexOf("class ");
+                    string empty = line.Substring(0, iNotEmpty);
+                    tabCount += (empty.Length - empty.Replace("    ", "").Length) / 4;
+                    tabCount += empty.Length - empty.Replace("\t", "").Length;
+                    classStack.Push((matchClass.Groups[1].Value, tabCount));
                     return true;
                 }
             }

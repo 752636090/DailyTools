@@ -1,10 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Root>
   <Files>
-    <Item Path="C:\Users\Administrator\Desktop\Test\DlgAdventureName.lua" />
-    <!--<Item Path="E:\Unity\MGame\MProject\Assets\LuaFramework\Lua\UI\Dialogs\DlgAdventureName.lua" />-->
-    <!--<Item Path="E:\Unity\MGame\MProject\Assets\LuaFramework\Lua\UI\3DText\UEHeadDlgMan.lua" />-->
-    <!--<Item Path="E:\Unity\MGame\MProject\Assets\LuaFramework\Lua\UI\Dialogs\DlgApocalypseEquipReinforce.lua" />-->
+    <Item Path="E:\Unity\MGame\MProject\Assets\LuaFramework\Lua\Activity\UEActivity.lua" />
   </Files>
   <Folders>
     <!--<Item Path="E:\Unity\MGame\MProject\Assets\LuaFramework" />-->

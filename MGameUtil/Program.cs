@@ -70,6 +70,10 @@ namespace MGameUtil
                 }
                 Process.Start(exePath, new string[] { @$"{key}" });
             }
+            else if (key == "123")
+            {
+                Console.WriteLine("\t".Length);
+            }
         }
     }
 }
