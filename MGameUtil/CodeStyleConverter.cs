@@ -16,7 +16,7 @@ namespace MGameUtil
         private static List<string> ignoreLst;
         private static List<Regex> regexsClass = new() { new("class \"(.*)\""), new("interface \"(.*)\""), new("struct \"(.*)\"") };
         private static Regex regexFunctionMine = new(@"function (.*):(.*)\((.*)\)");
-        //private static Regex regexFunctionMineStatic = new(@"function (.*).(.*)\((.*)\)");
+        private static Regex regexFunctionMineStatic = new(@"function (.*).(.*)\((.*)\)");
         private static Regex regexFunctionOther = new(@"function (.*)\((.*)\)");
 
 
@@ -120,6 +120,16 @@ namespace MGameUtil
                             } 
                         }
                     }
+                    else
+                    {
+                        Match matchFuncStatic = regexFunctionMineStatic.Match(line);
+                        if (matchFuncStatic.Success && line.ReplaceFirst("__DebugStatic__()", "").Trim().StartsWith("function ") && (line.StartsWith("\t") || line.StartsWith("    "))
+                        && classStack.Count > 0)
+                        {
+                            string className = classStack.Peek().Item1;
+                            line = line.ReplaceFirst($"function {className}.", "function ");
+                        }
+                    }
 
                     sb.AppendLine(line);
                 }
@@ -178,11 +188,11 @@ namespace MGameUtil
                             if (!funcName.Contains("(") && !funcName.Contains(")"))
                             {
                                 string className = classStack.Peek().Item1;
-                                string symbol = line.Contains($"(self") ? ":" : ".";
+                                string symbol = (line.Contains($"(self") || line.Contains($"( self")) ? ":" : ".";
                                 line = line.ReplaceFirst($"{funcName}", $"{className}{symbol}{funcName}");
-                                if (matchFunc.Groups[2].Value == "self")
+                                if (matchFunc.Groups[2].Value.Trim() == "self")
                                 {
-                                    line = line.ReplaceFirst($"{funcName}(self)", $"{funcName}()");
+                                    line = line.ReplaceFirst($"{funcName}(self)", $"{funcName}()").ReplaceFirst($"{funcName}( self )", $"{funcName}()");
                                 }
                                 else
                                 {
