@@ -19,7 +19,7 @@ namespace BooksRepath
             Console.ForegroundColor = ConsoleColor.Cyan;
             foreach (FileInfo file in files)
             {
-                if (infos[file.Name] > 0)
+                if (infos.ContainsKey(file.Name))
                 {
                     string targetPath = AppDomain.CurrentDomain.BaseDirectory + file.Name;
                     string targetDirectoryPath = targetPath.Substring(0, targetPath.LastIndexOf("\\"));
