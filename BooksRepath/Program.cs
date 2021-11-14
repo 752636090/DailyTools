@@ -7,44 +7,46 @@ namespace BooksRepath
 {
     class Program
     {
-        static List<string> infos = new List<string>();
+        static Dictionary<string, int> infos = new();
 
         static void Main(string[] args)
         {
             CollectInfo();
-            int infoLen = infos.Count;
-            bool[] flags = new bool[infoLen];
+            Dictionary<string, bool> flags = new();
 
-            DirectoryInfo directory = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
+            DirectoryInfo directory = new(AppDomain.CurrentDomain.BaseDirectory);
             FileInfo[] files = directory.GetFiles("*", SearchOption.AllDirectories);
+            Console.ForegroundColor = ConsoleColor.Cyan;
             foreach (FileInfo file in files)
             {
-                for (int i = 0; i < infoLen; i++)
+                if (infos[file.Name] > 0)
                 {
-                    string info = infos[i];
-                    if (info.Contains(file.Name))
+                    string targetPath = AppDomain.CurrentDomain.BaseDirectory + info;
+                    string targetDirectoryPath = targetPath.Substring(0, targetPath.LastIndexOf("\\"));
+                    if (!Directory.Exists(targetDirectoryPath))
                     {
-                        string targetPath = AppDomain.CurrentDomain.BaseDirectory + info;
-                        string targetDirectoryPath = targetPath.Substring(0, targetPath.LastIndexOf("\\"));
-                        if (!Directory.Exists(targetDirectoryPath))
-                        {
-                            Directory.CreateDirectory(targetDirectoryPath);
-                        }
-                        File.Move(file.FullName, targetPath);
-                        flags[i] = true;
-                        break;
+                        Directory.CreateDirectory(targetDirectoryPath);
                     }
+                    File.Move(file.FullName, targetPath);
+                    flags[file.Name] = true;
+                    break;
                 }
-            }
-
-            for (int i = 0; i < infoLen; i++)
-            {
-                if (flags[i] == false)
+                else
                 {
-                    Console.WriteLine("不存在：" + infos[i]);
+                    Console.WriteLine($"本地多余：{file.FullName}");
                 }
             }
 
+            Console.ForegroundColor = ConsoleColor.Red;
+            foreach (string info in infos.Keys)
+            {
+                if (flags[info] == false)
+                {
+                    Console.WriteLine("不存在：" + info);
+                }
+            }
+
+            Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine("完成");
             Console.ReadKey();
         }
@@ -56,7 +58,7 @@ namespace BooksRepath
             while (!sr.EndOfStream)
             {
                 string line = sr.ReadLine();
-                infos.Add(line);
+                infos[line] = infos[line] + 1;
             }
             sr.Close();
         }
