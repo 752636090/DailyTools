@@ -7,7 +7,7 @@ namespace BooksRepath
 {
     class Program
     {
-        static Dictionary<string, int> infos = new();
+        static Dictionary<string, string> infos = new();
 
         static void Main(string[] args)
         {
@@ -21,26 +21,25 @@ namespace BooksRepath
             {
                 if (infos.ContainsKey(file.Name))
                 {
-                    string targetPath = AppDomain.CurrentDomain.BaseDirectory + file.Name;
-                    string targetDirectoryPath = targetPath.Substring(0, targetPath.LastIndexOf("\\"));
+                    string targetPath = AppDomain.CurrentDomain.BaseDirectory + infos[file.Name];
+                    string targetDirectoryPath = targetPath[..targetPath.LastIndexOf("\\")];
                     if (!Directory.Exists(targetDirectoryPath))
                     {
                         Directory.CreateDirectory(targetDirectoryPath);
                     }
                     File.Move(file.FullName, targetPath);
                     flags[file.Name] = true;
-                    break;
                 }
-                else
+                else if (file.Extension == ".pdf")
                 {
-                    Console.WriteLine($"本地多余：{file.FullName}");
+                    Console.WriteLine($"本地多余：{file.Name}");
                 }
             }
 
             Console.ForegroundColor = ConsoleColor.Red;
             foreach (string info in infos.Keys)
             {
-                if (flags[info] == false)
+                if (!flags.ContainsKey(info) || flags[info] == false)
                 {
                     Console.WriteLine("不存在：" + info);
                 }
@@ -58,11 +57,8 @@ namespace BooksRepath
             while (!sr.EndOfStream)
             {
                 string line = sr.ReadLine();
-                if (!infos.ContainsKey(line))
-                {
-                    infos[line] = 0;
-                }
-                infos[line] = infos[line] + 1;
+                string name = line[(line.LastIndexOf(@"\") + 1)..];
+                infos[name] = line;
             }
             sr.Close();
         }
