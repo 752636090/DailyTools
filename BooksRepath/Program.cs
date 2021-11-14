@@ -58,6 +58,10 @@ namespace BooksRepath
             while (!sr.EndOfStream)
             {
                 string line = sr.ReadLine();
+                if (!infos.ContainsKey(line))
+                {
+                    infos[line] = 0;
+                }
                 infos[line] = infos[line] + 1;
             }
             sr.Close();
