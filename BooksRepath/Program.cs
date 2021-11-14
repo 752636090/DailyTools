@@ -21,7 +21,7 @@ namespace BooksRepath
             {
                 if (infos[file.Name] > 0)
                 {
-                    string targetPath = AppDomain.CurrentDomain.BaseDirectory + info;
+                    string targetPath = AppDomain.CurrentDomain.BaseDirectory + file.Name;
                     string targetDirectoryPath = targetPath.Substring(0, targetPath.LastIndexOf("\\"));
                     if (!Directory.Exists(targetDirectoryPath))
                     {
