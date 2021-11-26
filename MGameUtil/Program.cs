@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Common;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -15,7 +17,12 @@ namespace MGameUtil
                 {
                     Thread.Sleep(20);
                     string[] inputs = item.Split('|');
-                    Handle(inputs[0], inputs[1]);
+                    List<string> paramLst = new();
+                    for (int i = 1; i < inputs.Length; i++)
+                    {
+                        paramLst.Add(inputs[i]);
+                    }
+                    Handle(inputs[0], paramLst);
                 }
                 return;
             }
@@ -28,7 +35,7 @@ namespace MGameUtil
             }
         }
 
-        private static void Handle(string key, string param = null)
+        private static void Handle(string key, List<string> paramLst = null)
         {
             if (key == "1")
             {
@@ -48,26 +55,24 @@ namespace MGameUtil
             }
             else if (key == "5")
             {
-                CodeStyleConverter.ConvertToOther(param != null, param);
+                CodeStyleConverter.ConvertToOther(paramLst != null, paramLst[0]);
             }
             else if (key == "6")
             {
-                CodeStyleConverter.ConvertToMine(param != null, param);
+                CodeStyleConverter.ConvertToMine(paramLst != null, paramLst[0]);
+            }
+            else if (key == "7")
+            {
+                ReplaceUtil.ReplaceText(paramLst[0], paramLst[1], paramLst[2], paramLst[3]);
             }
             else if (new Regex(@"(.*)\|(.*)").IsMatch(key))
             {
                 string[] input = key.Split("|");
-                string exePath;
-                switch (int.Parse(input[0]))
+                string exePath = int.Parse(input[0]) switch
                 {
-                    case 5:
-                    case 6:
-                        exePath = @"E:\DailyTools\MGameUtil\bin\Debug\net5.0\MGameUtil.exe";
-                        break;
-                    default:
-                        exePath = @"E:\DailyTools\MGameUtil\bin\Debug\net5.0\MGameUtil.exe";
-                        break;
-                }
+                    5 or 6 => @"E:\DailyTools\MGameUtil\bin\Debug\net6.0\MGameUtil.exe",
+                    _ => @"E:\DailyTools\MGameUtil\bin\Debug\net6.0\MGameUtil.exe",
+                };
                 Process.Start(exePath, new string[] { @$"{key}" });
             }
             else if (key == "123")

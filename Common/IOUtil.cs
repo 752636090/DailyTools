@@ -169,5 +169,20 @@ namespace Common
             }
             return inUse;//true表示正在使用,false没有使用  
         }
+
+        public static void UnsetReadOnly(string folderPath)
+        {
+            string[] folderPathes = Directory.GetDirectories(folderPath, "*.*", SearchOption.AllDirectories);
+            string[] filePathes = Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories);
+            foreach (var dirPath in folderPathes)
+            {
+                DirectoryInfo dir = new(dirPath);
+                dir.Attributes = FileAttributes.Normal & FileAttributes.Directory;
+            }
+            foreach (var filePath in filePathes)
+            {
+                File.SetAttributes(filePath, FileAttributes.Normal);
+            }
+        }
     }
 }
