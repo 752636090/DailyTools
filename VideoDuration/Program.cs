@@ -67,14 +67,14 @@ namespace VideoDuration
                 }
                 foreach (DirectoryInfo dir in directory.GetDirectories())
                 {
-                    //if (!(
-                    //    dir.Name.Contains("直播")
-                    //    || dir.Name.Contains("答疑")
-                    //    || dir.Name.Contains("选修")
-                    //    || dir.Name.Contains("虚幻4")
-                    //    || dir.Name.Contains("U3D二次元")
-                    //    || dir.Name.Contains("资料")
-                    //    ))
+                    if (!(
+                        dir.Name.Contains("直播")
+                        || dir.Name.Contains("答疑")
+                        || dir.Name.Contains("选修")
+                        || dir.Name.Contains("虚幻4")
+                        || dir.Name.Contains("U3D二次元")
+                        || dir.Name.Contains("资料")
+                        ))
                     {
                         Console.WriteLine("进入文件夹" + dir.Name);
                         GetFiles(files, dir.FullName);
