@@ -2,8 +2,13 @@
 using System.Text;
 
 string path = @"C:\Users\zjk\Desktop\temp.txt";
-int pageNumDiff = 8;
+Dictionary<int, int> pageNumDiffs = new() { { 1, 0 }, { 349, 8 } };
 
+List<int> diffPages = new();
+foreach (int item in pageNumDiffs.Keys)
+{
+    diffPages.Add(item);
+}
 string[] srcLines = IOUtil.GetFileTextArr(new FileInfo(path));
 StringBuilder output = new();
 
@@ -34,6 +39,7 @@ StringBuilder output = new();
 //output.Clear();
 #endregion
 
+int diffIndex = 0;
 for (int iLine = 0; iLine < srcLines.Length; iLine++)
 {
     string line = srcLines[iLine].Trim();
@@ -43,7 +49,12 @@ for (int iLine = 0; iLine < srcLines.Length; iLine++)
     int pageNum = 0;
     try
     {
-        pageNum = int.Parse(info.Last()) + pageNumDiff;
+        pageNum = int.Parse(info.Last());
+        if (diffIndex < diffPages.Count - 1 && pageNum > diffPages[diffIndex + 1])
+        {
+            diffIndex++;
+        }
+        pageNum += pageNumDiffs[diffPages[diffIndex]];
     }
     catch (Exception e)
     {

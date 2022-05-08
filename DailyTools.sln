@@ -35,7 +35,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGameUtil", "MGameUtil\MGam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{CA49222C-93F0-497B-9046-54FD586553F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormatBookmarks", "FormatBookmarks\FormatBookmarks.csproj", "{6E981FC9-903C-4B87-BE8B-4B1145674D36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FormatBookmarks", "FormatBookmarks\FormatBookmarks.csproj", "{6E981FC9-903C-4B87-BE8B-4B1145674D36}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Book", "Book", "{15C40AE2-258D-48C5-A38B-E7CFEC15CF6F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -114,6 +116,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B85DA277-D3DA-4F0E-A12F-166D5B74FD55} = {15C40AE2-258D-48C5-A38B-E7CFEC15CF6F}
+		{4CE9B3C8-8FE7-404A-ACC0-B9D8D241DD7F} = {15C40AE2-258D-48C5-A38B-E7CFEC15CF6F}
+		{6E981FC9-903C-4B87-BE8B-4B1145674D36} = {15C40AE2-258D-48C5-A38B-E7CFEC15CF6F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {58C79098-0865-48F2-9699-E9D961DEF896}
